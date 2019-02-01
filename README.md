@@ -19,5 +19,19 @@ core backend api for streamline
   * mv .env.example .env
 * Generate application key with `php artisan key:generate`
 
+## Setup MySQL Database Locally
+* Install mysql : https://www.mysql.com/downloads/
+* Open mysql `mysql -uroot`
+* Create a database called streamline `create database streamline`
+* In the project, edit .env file
+  * Change `DB_DATABASE` to streamline
+  * Change `DB_USERNAME` to root
+  * Change `DB_PASSWORD` to your root password.
+  
+## Run database mirgration
+* Database migrations build up the database schema on your local machine. 
+* To run migrations run `php artisan migrate`
+* To rollback the migrations run `php artisan migrate:rollback`
+
 ## Start up the project server
 `php artisan serve`
