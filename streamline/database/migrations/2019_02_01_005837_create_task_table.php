@@ -17,9 +17,12 @@ class CreateTaskTable extends Migration
             $table->increments('id');
             $table->string('title', 100);
             $table->text('body');
-            $table->double('expectedDuration');
-            $table->double('actualDuration');
+            $table->integer('estimatedDurationHour');
+            $table->integer('estimatedDurationMin');
+            $table->integer('actualDurationHour');
+            $table->integer('actualDurationMin');
             $table->timestamp('lastWorked');
+            $table->unsignedInteger('creator_id');
             $table->boolean('active');
             $table->timestamps();
         });
