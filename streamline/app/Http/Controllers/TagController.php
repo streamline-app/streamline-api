@@ -37,6 +37,7 @@ class TagController extends Controller
     {
         $title = $request -> input('name');
         $description = $request -> input('description');
+        $email = $request -> input('email');
 
         DB::table('tag')->insert(
             [
@@ -47,6 +48,7 @@ class TagController extends Controller
                 'average_accuracy' => 0.0,
                 'task_over_to_under' => 0.0,
                 'color' => '#c4c4c4', //default color will be light grey
+                'user_email' => $email,
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString()
             ]

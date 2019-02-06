@@ -22,6 +22,7 @@ class CreateTagsTable extends Migration
             $table->double('average_accuracy');
             $table->double('task_over_to_under');
             $table->string('color', 10);
+            $table->string('user_email', 32);
             $table->timestamps();
         });
     }
