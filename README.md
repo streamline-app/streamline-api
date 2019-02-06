@@ -19,5 +19,9 @@ core backend api for streamline
   * mv .env.example .env
 * Generate application key with `php artisan key:generate`
 
+## Generate Secret key
+* Generate the secret key with `php artisan jwt:secret`
+* You will need this in order for auth to work
+
 ## Start up the project server
 `php artisan serve`
