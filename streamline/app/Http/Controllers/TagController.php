@@ -67,10 +67,11 @@ class TagController extends Controller
      * @param int $userID 
      * @return \Illuminate\Http\Response
      */
-    public function list($userID){
-        $tags = DB::table('tags')->where('userID', '=', $userID);
-
-        return view('tags.list', ['tags' => $tags]);
+    public function list(Request $request){
+        $userID = (int)($request -> userID);
+        $tags = DB::table('tags')->where('userID', '=', $userID)->get();
+        return  response()->json($tags);
+       // return view('tags.list', ['tags' => $tags]);
     }
 
     /**
