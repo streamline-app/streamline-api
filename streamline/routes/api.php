@@ -15,6 +15,7 @@
 Route::post('tasks', 'TaskController@store');
 
 Route::post('tags', 'TagController@store');
+Route::get('tags', 'TagController@list');
 
 // authentication routes
 Route::group([
@@ -29,5 +30,6 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
+
 
 });

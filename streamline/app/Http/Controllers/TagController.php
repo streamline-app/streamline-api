@@ -15,7 +15,9 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        $tags = DB::table('tags')->get();
+
+        return view('tags.index', ['tags' => $tags]);
     }
 
     /**
@@ -56,6 +58,19 @@ class TagController extends Controller
         );
         
         return 201;
+    }
+
+
+    /**
+     * Display all tags that belong to the user with userID
+     * 
+     * @param int $userID 
+     * @return \Illuminate\Http\Response
+     */
+    public function list($userID){
+        $tags = DB::table('tags')->where('userID', '=', $userID);
+
+        return view('tags.list', ['tags' => $tags]);
     }
 
     /**
