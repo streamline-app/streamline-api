@@ -64,7 +64,7 @@ class TagController extends Controller
     /**
      * Display all tags that belong to the user with userID
      * 
-     * @param int $userID 
+     * @param Request $request 
      * @return \Illuminate\Http\Response
      */
     public function list(Request $request){
@@ -111,11 +111,17 @@ class TagController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        //$id = (int)($request -> id); //get ID passed through request
+        //DB::delete('delete from tags where id = ?', [$id]);
+        
+        $query_tag = DB::table('tags')->where('id', '=', $id);
+        $query_tag->delete();
+
+        return 200;
     }
 }

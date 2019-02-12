@@ -14,8 +14,11 @@
 
 Route::post('tasks', 'TaskController@store');
 
+/* Tag Routes -------*/
 Route::post('tags', 'TagController@store');
 Route::get('tags', 'TagController@list');
+Route::delete('tags/{id}', 'TagController@destroy');
+/* ---------------- */
 
 // authentication routes
 Route::group([
