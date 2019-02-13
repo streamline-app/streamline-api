@@ -71,7 +71,6 @@ class TagController extends Controller
         $userID = (int)($request -> userID);
         $tags = DB::table('tags')->where('userID', '=', $userID)->get();
         return  response()->json($tags);
-       // return view('tags.list', ['tags' => $tags]);
     }
 
     /**
@@ -91,21 +90,31 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
-     * Update the specified resource in storage.
+     * edit the specified resource in storage based on user input
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function edit(Request $request, $id)
     {
-        //
+        //only three fields can be edited by the user, all others are done by app
+        DB::table('tags')->where('id', '=', $id)->update(
+            [
+                'name' => $request -> input('name'),
+                'description' => $request -> input('desc'),
+                'color' => $request -> input('color'), //default color will be light grey
+                'updated_at' => Carbon::now()->toDateTimeString()
+            ]
+        );
+
+        return 201;
     }
 
     /**
