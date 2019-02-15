@@ -70,6 +70,12 @@ class AuthController extends Controller
         $this -> login($request);
     }
 
+    public function delete(Request $request) {
+        return User::delete([
+            'id' => $request['id']
+        ]);
+        $this -> login($request);
+    }
 
     /**
      * Refresh a token.
