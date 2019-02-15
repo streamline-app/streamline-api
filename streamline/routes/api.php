@@ -12,7 +12,7 @@
 */
 
 
-Route::post('tasks', 'TaskController@store');
+Route::resource('tasks', 'TaskController');
 
 
 // authentication routes
@@ -28,5 +28,4 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-
 });
