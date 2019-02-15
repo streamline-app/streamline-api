@@ -15,7 +15,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        $tasks=\App\Task::all();
+        return $tasks;
     }
 
     /**
@@ -26,28 +27,19 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $title = $request -> input('title');
-        $body = $request -> input('body');
-        $estimatedMin = $request -> input('estimatedMin');
-        $estimatedHour = $request -> input('estimatedHour');
-
-        DB::table('task')->insert(
-            [
-                'title' => $title,
-                'body' => $body,
-                'estimatedDurationHour' => $estimatedHour,
-                'estimatedDurationMin' => $estimatedMin,
-                'actualDurationHour' => 0,
-                'actualDurationMin' => 0,
-                'lastWorked' => Carbon::now()->toDateTimeString(),
-                'creator_id' => 0,
-                'active' => false,
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'updated_at' => Carbon::now()->toDateTimeString()
-            ]
-        );
-
-        return 200;
+        //TODO: Validation 
+        $task = new \App\Task;
+        $task -> ownerId = 0;
+        $task -> title = $request -> get('title');
+        $task -> body = $request -> get('body');
+        $task -> workedDuration = $request -> input('workedDuration');
+        $task -> expDuration = $request -> input('expDuration');
+        $task -> created_at = Carbon::now()->toDateTimeString();
+        $task -> updated_at = Carbon::now()->toDateTimeString();
+        $task -> lastWorkedAt = null;
+        $task -> active = false;
+        $task -> save();
+        return 201;
     }
 
     /**
@@ -58,7 +50,8 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+        $task = \App\Task::find($id);
+        return $task;
     }
 
     /**
@@ -70,7 +63,13 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $task = \App\Task::find($id);
+        $task -> title = $request -> get('title');
+        $task -> body = $request -> get('body');
+        $task -> workedDuration = $request -> input('workedDuration');
+        $task -> expDuration = $request -> input('expDuration');
+        $task -> save();
+        return 200;
     }
 
     /**
@@ -81,6 +80,8 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $task = \App\Task::find($id);
+        $task -> delete();
+        return 200;
     }
 }
