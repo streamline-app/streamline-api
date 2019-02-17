@@ -12,7 +12,7 @@
 */
 
 
-Route::post('tasks', 'TaskController@store');
+Route::resource('tasks', 'TaskController');
 
 /* Tag Routes -------*/
 Route::post('tags', 'TagController@store');
