@@ -25,12 +25,14 @@ class CreateTasksTable extends Migration
             $table->text('body');
             // Current Total Time Worked on Task
             $table->bigInteger('workedDuration');
+            // User inputed expected dureation of task in hours
+            $table->integer('estimatedMin');
+            // User inputed expected duration of task in hours
+            $table->integer('estimatedHour');
             // Expected Total Time the Task Should Take
             $table->bigInteger('expDuration');
-            // Task Creation Time
-            $table->timestamp('created_at');
-            // Task Last Modified Time
-            $table->timestamp('updated_at');
+            // Updated_At at and Created_At
+            $table->timestamps();
             // Task Last Turned Active Time
             $table->timestamp('lastWorkedAt')->nullable();
             // Whether a Task is Active (Worked On) or Inactive

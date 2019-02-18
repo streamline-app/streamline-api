@@ -32,8 +32,10 @@ class TaskController extends Controller
         $task -> ownerId = 0;
         $task -> title = $request -> get('title');
         $task -> body = $request -> get('body');
-        $task -> workedDuration = $request -> input('workedDuration');
-        $task -> expDuration = $request -> input('expDuration');
+        $task -> workedDuration = 0;
+        $task -> expDuration = 0;
+        $task -> estimatedMin = $request -> input('estimatedMin');
+        $task -> estimatedHour = $request -> input('estimatedHour');
         $task -> created_at = Carbon::now()->toDateTimeString();
         $task -> updated_at = Carbon::now()->toDateTimeString();
         $task -> lastWorkedAt = null;
@@ -67,6 +69,8 @@ class TaskController extends Controller
         $task -> title = $request -> get('title');
         $task -> body = $request -> get('body');
         $task -> workedDuration = $request -> input('workedDuration');
+        $task -> estimatedMin = $request -> input('estimatedMin');
+        $task -> estimatedHour = $request -> input('estimatedHour');
         $task -> expDuration = $request -> input('expDuration');
         $task -> save();
         return 200;
