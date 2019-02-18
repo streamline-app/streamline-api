@@ -57,15 +57,15 @@ class TaskController extends Controller
     }
 
     /**
-     * Display all tags that belong to the user with userID
+     * Display all tasks that belong to the user with userID
      * 
      * @param Request $request 
      * @return \Illuminate\Http\Response
      */
     public function list(Request $request){
         $userID = (int)($request -> userID);
-        $tags = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'estimatedMin', 'estimatedHour']);
-        return  response()->json($tags);
+        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'estimatedMin', 'estimatedHour']);
+        return  response()->json($tasks);
     }
 
     /**
