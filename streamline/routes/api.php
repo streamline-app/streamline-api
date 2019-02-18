@@ -11,8 +11,10 @@
 |
 */
 
-
+/* Task Routes ------- */
 Route::resource('tasks', 'TaskController');
+Route::get('tasks', 'TaskController@list');
+/* ------------------ */
 
 /* Tag Routes -------*/
 Route::post('tags', 'TagController@store');

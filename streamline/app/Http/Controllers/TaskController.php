@@ -29,7 +29,7 @@ class TaskController extends Controller
     {
         //TODO: Validation 
         $task = new \App\Task;
-        $task -> ownerId = 0;
+        $task -> ownerId = $request -> input('userID');
         $task -> title = $request -> get('title');
         $task -> body = $request -> get('body');
         $task -> workedDuration = 0;
@@ -54,6 +54,18 @@ class TaskController extends Controller
     {
         $task = \App\Task::find($id);
         return $task;
+    }
+
+    /**
+     * Display all tags that belong to the user with userID
+     * 
+     * @param Request $request 
+     * @return \Illuminate\Http\Response
+     */
+    public function list(Request $request){
+        $userID = (int)($request -> userID);
+        $tags = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'estimatedMin', 'estimatedHour']);
+        return  response()->json($tags);
     }
 
     /**
