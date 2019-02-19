@@ -49,10 +49,18 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    /**
+     * Establishes one-to-many relationship with Tag collection
+     * 
+     */
     public function tags(){
         return $this->hasMany('\App\Tag', 'userID');
     }
 
+    /**
+     * Establishes one-to-many relationship with Tasks collection
+     * 
+     */
     public function tasks(){
         return $this->hasMany('\App\Task', 'ownerId');
     }
