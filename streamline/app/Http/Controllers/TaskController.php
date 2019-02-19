@@ -16,7 +16,7 @@ class TaskController extends Controller
     public function index()
     {
         $tasks=\App\Task::all();
-        return $tasks;
+        return response()->json($tasks);
     }
 
     /**
@@ -33,15 +33,19 @@ class TaskController extends Controller
         $task -> title = $request -> get('title');
         $task -> body = $request -> get('body');
         $task -> workedDuration = 0;
-        $task -> expDuration = 0;
+        $task -> expDuration = $request -> input('expDuration');
         $task -> estimatedMin = $request -> input('estimatedMin');
         $task -> estimatedHour = $request -> input('estimatedHour');
         $task -> created_at = Carbon::now()->toDateTimeString();
         $task -> updated_at = Carbon::now()->toDateTimeString();
         $task -> lastWorkedAt = null;
-        $task -> active = false;
+        $task -> isFinished = false;
         $task -> save();
-        return 201;
+
+        $responseText = 'Successfully Created Object with ID: %s';
+        $responseFull = sprintf($responseText, $task->id);
+        return response($responseFull, 201)
+            ->header('Content-Type', 'text/plain');
     }
 
     /**
@@ -53,7 +57,12 @@ class TaskController extends Controller
     public function show($id)
     {
         $task = \App\Task::find($id);
-        return $task;
+
+        if ($task == null) {
+            return response('', 404);
+        } else {
+            return $task;
+        }
     }
 
     /**
@@ -78,6 +87,13 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = \App\Task::find($id);
+
+        if ($task == null) {
+            return response('', 404);
+        } else if ($task -> isFinished) {
+            return response('Task already finished.', 409); 
+        }
+
         $task -> title = $request -> get('title');
         $task -> body = $request -> get('body');
         $task -> workedDuration = $request -> input('workedDuration');
@@ -85,7 +101,7 @@ class TaskController extends Controller
         $task -> estimatedHour = $request -> input('estimatedHour');
         $task -> expDuration = $request -> input('expDuration');
         $task -> save();
-        return 200;
+        return response('', 204);
     }
 
     /**
@@ -97,7 +113,78 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = \App\Task::find($id);
+        if ($task == null) {
+            return response('', 404);
+        }
+
         $task -> delete();
-        return 200;
+        return response('', 204);
+    }
+
+
+    /**
+     * Start the specified task based on ID
+     */
+    public function start($id) {
+        $task = \App\Task::find($id);
+
+        if ($task == null) {
+            return response('', 404);
+        }
+
+        if ($task -> isFinished) {
+            return response('Task already finished.', 409);
+        } else if ($task -> lastWorkedAt != null) {
+            return response('Task already started.', 409);
+        } else {
+            $task -> lastWorkedAt = Carbon::now()->toDateTimeString();
+            $task -> save();
+            return response('', 204);
+        }
+    }
+
+    /**
+     * Stop the specified task based on ID
+     */
+    public function stop($id) {
+
+        $task = \App\Task::find($id);
+
+        if ($task == null) {
+            return response('', 404);
+        }
+
+        if ($task -> isFinished) {
+            return response('Task already finished.', 409);
+        } else if ($task -> lastWorkedAt == null) {
+            return response('Task has not been started.', 409);
+        } else {
+            $totalDuration = Carbon::now()->diffInSeconds(Carbon::parse($task -> lastWorkedAt));
+            $task -> workedDuration += $totalDuration;
+            $task -> lastWorkedAt = null;
+            $task -> save();
+            return response('', 204);
+        }
+
+    }
+
+    /**
+     * Complete the specified task based on ID
+     */
+    public function finish($id) {
+        $task = \App\Task::find($id);
+
+        if ($task == null) {
+            return response('', 404);
+        } else if ($task -> lastWorkedAt != null) {
+            return response('Task currently started, please stop before finishing.', 409);
+        } else if ($task -> isFinished) {
+            return response('Task already finished.', 409);
+        }
+
+        //TODO: Implement Analytics Hook
+        $task -> isFinished = true;
+        $task -> save();
+        return response('', 204);
     }
 }

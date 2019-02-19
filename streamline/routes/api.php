@@ -11,17 +11,10 @@
 |
 */
 
-/* Task Routes ------- */
 Route::resource('tasks', 'TaskController');
-Route::get('tasks', 'TaskController@list');
-/* ------------------ */
-
-/* Tag Routes -------*/
-Route::post('tags', 'TagController@store');
-Route::get('tags', 'TagController@list');
-Route::delete('tags/{id}', 'TagController@destroy');
-Route::post('tags/{id}', 'TagController@edit');
-/* ---------------- */
+Route::post('tasks/{id}/start', 'TaskController@start');
+Route::post('tasks/{id}/stop', 'TaskController@stop');
+Route::post('tasks/{id}/finish', 'TaskController@finish');
 
 // authentication routes
 Route::group([
@@ -36,6 +29,4 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-
-
 });
