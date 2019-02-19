@@ -27,6 +27,8 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $tags = $request -> get('tags');
+
         //TODO: Validation 
         $task = new \App\Task;
         $task -> ownerId = $request -> input('userID');
@@ -41,6 +43,10 @@ class TaskController extends Controller
         $task -> lastWorkedAt = null;
         $task -> active = false;
         $task -> save();
+
+        $tag = \App\Tag::find($tags);
+        $task->tags()->attach($tag);
+
         return 201;
     }
 
