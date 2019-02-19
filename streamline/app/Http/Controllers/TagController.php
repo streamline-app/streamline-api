@@ -42,7 +42,7 @@ class TagController extends Controller
         $description = $request -> input('description');
         $userID = $request -> input('userID');
         $color = $request -> input('color');
-
+/*
         DB::table('tags')->insert(
             [
                 'name' => $name,
@@ -57,7 +57,19 @@ class TagController extends Controller
                 'updated_at' => Carbon::now()->toDateTimeString()
             ]
         );
-        
+  */
+        $tag = new \App\Tag;
+        $tag -> name = $name;
+        $tag -> description = $description;
+        $tag -> average_time = 0;
+        $tag -> average_accuracy = 0;
+        $tag -> task_over_to_under = 0;
+        $tag -> userID = $userID;
+        $tag -> color = $color;
+        $tag -> created_at = Carbon::now()->toDateTimeString();
+        $tag -> updated_at = Carbon::now()->toDateTimeString();
+        $tag ->save();
+  
         return 201;
     }
 

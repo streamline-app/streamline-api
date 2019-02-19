@@ -18,7 +18,7 @@ class CreateTasksTable extends Migration
             $table->increments('id');
             // Unique ID of owner
             // TODO: Incorporate Actual User ID
-            $table->unsignedInteger('ownerId');
+            $table->integer('ownerId')->unsigned();
             // Title of Task
             $table->string('title', 100);
             // Body of Task
@@ -37,6 +37,10 @@ class CreateTasksTable extends Migration
             $table->timestamp('lastWorkedAt')->nullable();
             // Whether a Task is Active (Worked On) or Inactive
             $table->boolean('active')->default(false);
+        });
+
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->foreign('ownerId')->references('id')->on('users');
         });
     }
 

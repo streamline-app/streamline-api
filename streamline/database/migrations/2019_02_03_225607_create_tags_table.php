@@ -22,8 +22,12 @@ class CreateTagsTable extends Migration
             $table->double('average_accuracy');
             $table->double('task_over_to_under');
             $table->string('color', 10);
-            $table->integer('userID');
+            $table->integer('userID')->unsigned();
             $table->timestamps();
+        });
+
+        Schema::table('tags', function (Blueprint $table) {
+            $table->foreign('userID')->references('id')->on('users');
         });
     }
 
