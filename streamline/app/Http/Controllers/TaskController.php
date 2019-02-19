@@ -15,7 +15,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks=\App\Task::all();
+        $tasks = \App\Task::all();
         return $tasks;
     }
 
@@ -63,8 +63,9 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function list(Request $request){
-        $userID = (int)($request -> userID);
-        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'estimatedMin', 'estimatedHour']);
+
+        $tasks = \App\User::find($request -> userID)->tasks;
+
         return  response()->json($tasks);
     }
 

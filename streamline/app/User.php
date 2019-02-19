@@ -50,10 +50,10 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function tags(){
-        return $this->hasMany('App\Tag');
+        return $this->hasMany('\App\Tag', 'userID');
     }
 
     public function tasks(){
-        return $this->hasMany('App\Task');
+        return $this->hasMany('\App\Task', 'ownerId');
     }
 }
