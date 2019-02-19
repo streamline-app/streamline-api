@@ -11,7 +11,12 @@
 |
 */
 
-Route::resource('tasks', 'TaskController');
+Route::get('tasks/', 'TaskController@index');
+Route::post('tasks/', 'TaskController@create');
+Route::get('tasks/{id}', 'TaskController@read');
+Route::put('tasks/{id}', 'TaskController@update');
+Route::delete('tasks/{id}', 'TaskController@delete');
+
 Route::post('tasks/{id}/start', 'TaskController@start');
 Route::post('tasks/{id}/stop', 'TaskController@stop');
 Route::post('tasks/{id}/finish', 'TaskController@finish');

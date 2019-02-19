@@ -9,13 +9,19 @@ use Carbon\Carbon;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all tasks owned by specified user.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks=\App\Task::all();
+        $userID = $request -> query('userID');
+
+        if ($userID == null) {
+            return response('Missing userID', 404);
+        }
+
+        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'estimatedMin', 'estimatedHour', 'lastWorkedAt', 'isFinished']);
         return response()->json($tasks);
     }
 
@@ -25,7 +31,7 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
         //TODO: Validation 
         $task = new \App\Task;
@@ -54,7 +60,7 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function read($id)
     {
         $task = \App\Task::find($id);
 
@@ -63,18 +69,6 @@ class TaskController extends Controller
         } else {
             return $task;
         }
-    }
-
-    /**
-     * Display all tasks that belong to the user with userID
-     * 
-     * @param Request $request 
-     * @return \Illuminate\Http\Response
-     */
-    public function list(Request $request){
-        $userID = (int)($request -> userID);
-        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'estimatedMin', 'estimatedHour']);
-        return  response()->json($tasks);
     }
 
     /**
@@ -110,7 +104,7 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete($id)
     {
         $task = \App\Task::find($id);
         if ($task == null) {
