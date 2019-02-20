@@ -17,7 +17,6 @@ class CreateTasksTable extends Migration
             // Unique ID of Task
             $table->increments('id');
             // Unique ID of owner
-            // TODO: Incorporate Actual User ID
             $table->integer('ownerId')->unsigned();
             // Title of Task
             $table->string('title', 100);
@@ -25,7 +24,7 @@ class CreateTasksTable extends Migration
             $table->text('body');
             // Current Total Time Worked on Task
             $table->bigInteger('workedDuration');
-            // User inputed expected dureation of task in hours
+            // User inputed expected duration of task in minutes
             $table->integer('estimatedMin');
             // User inputed expected duration of task in hours
             $table->integer('estimatedHour');

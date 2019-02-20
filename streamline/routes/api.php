@@ -10,6 +10,11 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//Tag Routes
+Route::get('tags/', 'TagController@list');
+Route::post('tags/create', 'TagController@create');
+Route::post('tags/edit/{id}', 'TagController@edit');
+Route::delete('tags/delete/{id}', 'TagController@destroy');
 
 // Task Tag routes
 Route::get('tasks/tags/{id}', 'TaskController@listTags');
@@ -17,9 +22,9 @@ Route::post('tasks/removeTag/{id}/{tagID}', 'TaskController@removeTag');
 
 // Task CRUD Routes
 Route::get('tasks/', 'TaskController@index');
-Route::post('tasks/', 'TaskController@create');
+Route::post('tasks/create', 'TaskController@create');
 Route::get('tasks/{id}', 'TaskController@read');
-Route::put('tasks/{id}', 'TaskController@update');
+Route::put('tasks/update/{id}', 'TaskController@update');
 Route::delete('tasks/{id}', 'TaskController@delete');
 
 // Task Control Routes
