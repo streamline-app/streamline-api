@@ -192,7 +192,95 @@ class TaskTest extends TestCase
         $response->assertStatus(404);
     }
 
+    /**
+     * Test simple control flow:
+     * 1. Create Task
+     * 2. Start Task
+     * 3. Stop Task
+     * 4. Finish Task
+     */
+    public function testSimpleControlFlow() {
+        $createResp = $this->json('POST', 'api/tasks/', [
+            'title' => 'Test Valid Read',
+            'body' => 'Test Body',
+            'expDuration' => 2700,
+            'estimatedMin' => 45,
+            'estimatedHour' => 0,
+            'userID' => 1
+        ]);
 
+        $id =  $createResp->getData() -> id;
+
+        $startResp = $this->json('POST', "api/tasks/{$id}/start");
+        $startResp->assertStatus(204);
+
+        $stopResp = $this->json('POST', "api/tasks/{$id}/stop");
+        $stopResp->assertStatus(204);
+
+        $finishResp = $this->json('POST', "api/tasks/{$id}/finish");
+        $finishResp->assertStatus(204);
+
+        $response = $this->json('DELETE', "api/tasks/{$id}");
+    }
+
+    /**
+     * Test Start/Stop Validation
+     * 1. A started Task cannot be started again
+     * 2. A stopped Task cannot be stopped again
+     */
+    public function testStartStopValidationFlow() {
+        $createResp = $this->json('POST', 'api/tasks/', [
+            'title' => 'Test Valid Read',
+            'body' => 'Test Body',
+            'expDuration' => 2700,
+            'estimatedMin' => 45,
+            'estimatedHour' => 0,
+            'userID' => 1
+        ]);
+
+        $id =  $createResp->getData() -> id;
+
+        $startResp = $this->json('POST', "api/tasks/{$id}/start");
+        $startResp->assertStatus(204);
+
+        $startResp = $this->json('POST', "api/tasks/{$id}/start");
+        $startResp->assertStatus(409);
+
+        $stopResp = $this->json('POST', "api/tasks/{$id}/stop");
+        $stopResp->assertStatus(204);
+
+        $stopResp = $this->json('POST', "api/tasks/{$id}/stop");
+        $stopResp->assertStatus(409);
+
+        $response = $this->json('DELETE', "api/tasks/{$id}");
+    }
+
+    public function testFinishValidationFlow() {
+        $createResp = $this->json('POST', 'api/tasks/', [
+            'title' => 'Test Valid Read',
+            'body' => 'Test Body',
+            'expDuration' => 2700,
+            'estimatedMin' => 45,
+            'estimatedHour' => 0,
+            'userID' => 1
+        ]);
+
+        $id =  $createResp->getData() -> id;
+
+        $finishResp = $this->json('POST', "api/tasks/{$id}/finish");
+        $finishResp->assertStatus(204);
+
+        $startResp = $this->json('POST', "api/tasks/{$id}/start");
+        $startResp->assertStatus(409);
+
+        $stopResp = $this->json('POST', "api/tasks/{$id}/stop");
+        $stopResp->assertStatus(409);
+
+        $finishResp = $this->json('POST', "api/tasks/{$id}/finish");
+        $finishResp->assertStatus(409);
+
+        $response = $this->json('DELETE', "api/tasks/{$id}");
+    }
 
 
 }
