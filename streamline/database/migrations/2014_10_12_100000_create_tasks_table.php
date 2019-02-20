@@ -36,7 +36,7 @@ class CreateTasksTable extends Migration
             // Task Last Turned Active Time
             $table->timestamp('lastWorkedAt')->nullable();
             // Whether a Task is Active (Worked On) or Inactive
-            $table->boolean('active')->default(false);
+            $table->boolean('isFinished')->default(false);
         });
 
         Schema::table('tasks', function (Blueprint $table) {

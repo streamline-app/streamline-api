@@ -11,19 +11,21 @@
 |
 */
 
-/* Task Routes ------- */
-Route::resource('tasks', 'TaskController');
-Route::get('tasks/all/{userID}', 'TaskController@list');
+// Task Tag routes
 Route::get('tasks/tags/{id}', 'TaskController@listTags');
 Route::post('tasks/removeTag/{id}/{tagID}', 'TaskController@removeTag');
-/* ------------------ */
 
-/* Tag Routes -------*/
-Route::post('tags', 'TagController@store');
-Route::get('tags', 'TagController@list');
-Route::delete('tags/{id}', 'TagController@destroy');
-Route::post('tags/{id}', 'TagController@edit');
-/* ---------------- */
+// Task CRUD Routes
+Route::get('tasks/', 'TaskController@index');
+Route::post('tasks/', 'TaskController@create');
+Route::get('tasks/{id}', 'TaskController@read');
+Route::put('tasks/{id}', 'TaskController@update');
+Route::delete('tasks/{id}', 'TaskController@delete');
+
+// Task Control Routes
+Route::post('tasks/{id}/start', 'TaskController@start');
+Route::post('tasks/{id}/stop', 'TaskController@stop');
+Route::post('tasks/{id}/finish', 'TaskController@finish');
 
 // authentication routes
 Route::group([
@@ -38,6 +40,4 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-
-
 });

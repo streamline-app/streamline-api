@@ -25,3 +25,9 @@ core backend api for streamline
 
 ## Start up the project server
 `php artisan serve`
+
+## Run endpoint unit tests
+* Ensure that you have a running instance of MySQL with correct credentials, refresh is optional
+`php artisan migrate:refresh`
+* Run unit tests (Must have phpunit installed globablly)
+`phpunit`
