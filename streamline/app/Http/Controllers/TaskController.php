@@ -33,6 +33,8 @@ class TaskController extends Controller
      */
     public function create(Request $request)
     {
+        $tagIDs = $request -> get('tags');
+
         //TODO: Validation 
         $task = new \App\Task;
         $task -> ownerId = $request -> input('userID');
@@ -48,6 +50,10 @@ class TaskController extends Controller
         $task -> isFinished = false;
         $task -> save();
 
+        // Attatch Tags
+        $tags = \App\Tag::find($tagIDs);
+        $task->tags()->attach($tags);
+
         return response()
             ->json([
                 'id' => $task->id
@@ -57,7 +63,7 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param $id => taskID
      * @return \Illuminate\Http\Response
      */
     public function read($id)
@@ -72,6 +78,19 @@ class TaskController extends Controller
     }
 
     /**
+     * List all tags associated with task
+     * 
+     * @param $id TaskID of interest
+     * @return \Illuminate\Htpp\Response with json list of tags
+     */
+    public function listTags($id){
+        $task = \App\Task::find($id);
+        $tags = $task->tags;
+
+        return response()->json($tags);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -80,6 +99,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //find task of interest
         $task = \App\Task::find($id);
 
         if ($task == null) {
@@ -95,6 +115,22 @@ class TaskController extends Controller
         $task -> estimatedHour = $request -> input('estimatedHour');
         $task -> expDuration = $request -> input('expDuration');
         $task -> save();
+
+        return response('', 204);
+    }
+
+    /**
+     *  Remove the relation between the specified tag
+     *  and task
+     * 
+     * @param $id => taskID
+     * @param $userID
+     * @return \Illumnitate\Http\Response
+     */
+    public function removeTag($id, $tagID){
+        $task = \App\Task::find($id);
+        $task->tags()->detach($tagID);
+
         return response('', 204);
     }
 
@@ -106,10 +142,15 @@ class TaskController extends Controller
      */
     public function delete($id)
     {
+        //get tag from collection
         $task = \App\Task::find($id);
+
         if ($task == null) {
             return response('', 404);
         }
+
+        //delete any rows in pivot table associated with this task
+        $task -> tags() -> detach();
 
         $task -> delete();
         return response('', 204);

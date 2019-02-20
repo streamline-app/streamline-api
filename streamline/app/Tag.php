@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Task extends Model
+class Tag extends Model
 {
     public function user(){
         return $this->belongsTo('App\User');
     }
 
-    public function tags(){
-        return $this->belongsToMany(Tag::class, 'taggable');
+    public function tasks(){
+        return $this->belongsToMany(Task::class, 'taggable');
     }
 }

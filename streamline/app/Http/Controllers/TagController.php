@@ -15,9 +15,9 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tags = DB::table('tags')->get();
+        $tags = \App\Tag::all();
 
-        return view('tags.index', ['tags' => $tags]);
+        return $tags;
     }
 
     /**
@@ -25,7 +25,7 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store()
     {
         //
     }
@@ -36,29 +36,23 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        $name = $request -> input('name');
-        $description = $request -> input('description');
-        $userID = $request -> input('userID');
-        $color = $request -> input('color');
-
-        DB::table('tags')->insert(
-            [
-                'name' => $name,
-                'description' => $description,
-                'tasks_completed' => 0,
-                'average_time' => 0.0,
-                'average_accuracy' => 0.0,
-                'task_over_to_under' => 0.0,
-                'color' => $color, //default color will be light grey
-                'userID' => $userID,
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'updated_at' => Carbon::now()->toDateTimeString()
-            ]
-        );
-        
-        return 201;
+        //create new instance of Tag and add to Collection
+        $tag = new \App\Tag;
+        $tag -> name = $request -> input('name');
+        $tag -> description = $request -> input('description');
+        $tag -> tasks_completed = 0;
+        $tag -> average_time = 0;
+        $tag -> average_accuracy = 0;
+        $tag -> task_over_to_under = 0;
+        $tag -> userID =  $request -> input('userID');
+        $tag -> color = $request -> input('color');
+        $tag -> created_at = Carbon::now()->toDateTimeString();
+        $tag -> updated_at = Carbon::now()->toDateTimeString();
+        $tag ->save();
+  
+        return 201; //201 Created
     }
 
 
@@ -69,9 +63,11 @@ class TagController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function list(Request $request){
-        $userID = (int)($request -> userID);
-        $tags = DB::table('tags')->where('userID', '=', $userID)->get();
-        return  response()->json($tags);
+
+        //find all tags associated with the given userID
+        $tags = \App\User::find($request -> userID)->tags;
+
+        return $tags;
     }
 
     /**
@@ -105,17 +101,17 @@ class TagController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        //only three fields can be edited by the user, all others are done by app
-        DB::table('tags')->where('id', '=', $id)->update(
-            [
-                'name' => $request -> input('name'),
-                'description' => $request -> input('desc'),
-                'color' => $request -> input('color'), //default color will be light grey
-                'updated_at' => Carbon::now()->toDateTimeString()
-            ]
-        );
+        //find tag of interest
+        $tag = \App\Tag::find($id);
 
-        return 201;
+        //update necessary fields
+        $tag -> name = $request -> input('name');
+        $tag -> description =  $request -> input('desc');
+        $tag -> color =  $request -> input('color');
+        $tag -> updated_at = Carbon::now()->toDateTimeString();
+        $tag ->save();
+
+        return 200; //200 OK
     }
 
     /**
@@ -125,13 +121,14 @@ class TagController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //$id = (int)($request -> id); //get ID passed through request
-        //DB::delete('delete from tags where id = ?', [$id]);
-        
-        $query_tag = DB::table('tags')->where('id', '=', $id);
-        $query_tag->delete();
+    {       
+        //find Tag with given ID
+        $tag = \App\Tag::find($id);
+        //delete all relations associated with this tag
+        $tag->tasks()->detach();
+        //delete tag
+        $tag -> delete();
 
-        return 200;
+        return 200; //200 OK
     }
 }
