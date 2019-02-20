@@ -31,6 +31,7 @@ class TokenController extends Controller
         $token -> userId = $request -> input('userId');
         $token -> token = $request -> input('token');
         $token -> save();
+        return $token;
     }
 
     /**
@@ -79,5 +80,17 @@ class TokenController extends Controller
     {
         $token = \App\Token::where('token', $token) -> first();
         $token -> delete();
+    }
+
+    /**
+    * Validate a given token and return a user id
+    */
+    public function validateToken($token) {
+        $response = \App\Token::where('token', $token) -> first();
+        if ($response) {
+            return $response -> userId;
+        } else {
+            return 0;
+        }
     }
 }
