@@ -32,6 +32,16 @@ Route::post('tasks/{id}/start', 'TaskController@start');
 Route::post('tasks/{id}/stop', 'TaskController@stop');
 Route::post('tasks/{id}/finish', 'TaskController@finish');
 
+// Token CRUD Routes
+Route::get('tokens/', 'TokenController@index');
+Route::post('tokens/create', 'TokenController@create');
+Route::get('tokens/{id}', 'TokenController@read');
+Route::put('tokens/update/{id}', 'TokenController@update');
+Route::delete('tokens/delete/{token}', 'TokenController@delete');
+Route::get('tokens/validate/{token}', 'TokenController@validateToken');
+
+
+
 // authentication routes
 Route::group([
 
