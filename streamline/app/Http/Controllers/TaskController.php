@@ -48,10 +48,10 @@ class TaskController extends Controller
         $task -> isFinished = false;
         $task -> save();
 
-        $responseText = 'Successfully Created Object with ID: %s';
-        $responseFull = sprintf($responseText, $task->id);
-        return response($responseFull, 201)
-            ->header('Content-Type', 'text/plain');
+        return response()
+            ->json([
+                'id' => $task->id
+            ], 201);
     }
 
     /**
