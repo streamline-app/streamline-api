@@ -103,6 +103,14 @@ class TaskController extends Controller
     }
 
     /**
+     * 
+     */
+    public function removeTag($id, $tagID){
+        $task = \App\Task::find($id);
+        $task->tags()->detach($tagID);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
