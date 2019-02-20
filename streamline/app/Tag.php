@@ -10,8 +10,7 @@ class Tag extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function task(){
-    //    return $this->morphedByMany('App\Task', 'taggable');
+    public function tasks(){
         return $this->belongsToMany(Task::class, 'taggable');
     }
 }

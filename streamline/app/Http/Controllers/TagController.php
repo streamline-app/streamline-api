@@ -38,6 +38,7 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
+        //create new instance of Tag and add to Collection
         $tag = new \App\Tag;
         $tag -> name = $request -> input('name');
         $tag -> description = $request -> input('description');
@@ -51,7 +52,7 @@ class TagController extends Controller
         $tag -> updated_at = Carbon::now()->toDateTimeString();
         $tag ->save();
   
-        return 201;
+        return 201; //201 Created
     }
 
 
@@ -63,6 +64,7 @@ class TagController extends Controller
      */
     public function list(Request $request){
 
+        //find all tags associated with the given userID
         $tags = \App\User::find($request -> userID)->tags;
 
         return $tags;
@@ -99,14 +101,17 @@ class TagController extends Controller
      */
     public function edit(Request $request, $id)
     {
+        //find tag of interest
         $tag = \App\Tag::find($id);
+
+        //update necessary fields
         $tag -> name = $request -> input('name');
         $tag -> description =  $request -> input('desc');
         $tag -> color =  $request -> input('color');
         $tag -> updated_at = Carbon::now()->toDateTimeString();
         $tag ->save();
 
-        return 201;
+        return 200; //200 OK
     }
 
     /**
@@ -117,9 +122,13 @@ class TagController extends Controller
      */
     public function destroy($id)
     {       
+        //find Tag with given ID
         $tag = \App\Tag::find($id);
+        //delete all relations associated with this tag
+        $tag->tasks()->detach();
+        //delete tag
         $tag -> delete();
 
-        return 200;
+        return 200; //200 OK
     }
 }
