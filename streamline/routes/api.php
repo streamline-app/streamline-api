@@ -13,7 +13,8 @@
 
 /* Task Routes ------- */
 Route::resource('tasks', 'TaskController');
-Route::get('tasks', 'TaskController@list');
+Route::get('tasks/all/{userID}', 'TaskController@list');
+Route::get('tasks/tags/{id}', 'TaskController@listTags');
 /* ------------------ */
 
 /* Tag Routes -------*/

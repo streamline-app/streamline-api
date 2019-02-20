@@ -27,7 +27,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $tags = $request -> get('tags');
+        $tagIDs = $request -> get('tags');
 
         //TODO: Validation 
         $task = new \App\Task;
@@ -44,8 +44,8 @@ class TaskController extends Controller
         $task -> active = false;
         $task -> save();
 
-        $tag = \App\Tag::find($tags);
-        $task->tags()->attach($tag);
+        $tags = \App\Tag::find($tagIDs);
+        $task->tags()->attach($tags);
 
         return 201;
     }
@@ -68,11 +68,18 @@ class TaskController extends Controller
      * @param Request $request 
      * @return \Illuminate\Http\Response
      */
-    public function list(Request $request){
+    public function list($userID){
 
-        $tasks = \App\User::find($request -> userID)->tasks;
+        $tasks = \App\User::find($userID)->tasks;
 
         return  response()->json($tasks);
+    }
+
+    public function listTags($id){
+        $task = \App\Task::find($id);
+        $tags = $task->tags;
+
+        return response()->json($tags);
     }
 
     /**
