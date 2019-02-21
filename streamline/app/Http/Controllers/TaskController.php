@@ -21,7 +21,9 @@ class TaskController extends Controller
             return response('Missing userID', 404);
         }
 
-        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'estimatedMin', 'estimatedHour', 'lastWorkedAt', 'isFinished']);
+        $tasks = \App\User::find($userID)->tasks;
+
+        //$tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'workedDuration', 'estimatedMin', 'estimatedHour', 'lastWorkedAt', 'expDuration', 'isFinished']);
         return response()->json($tasks);
     }
 
