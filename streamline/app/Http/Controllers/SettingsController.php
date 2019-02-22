@@ -35,7 +35,8 @@ class SettingsController extends Controller
      */
     public function show($id)
     {
-        //
+        
+        $settings = \App\User::find($request -> userID)->tags;
     }
 
     /**
@@ -60,4 +61,6 @@ class SettingsController extends Controller
     {
         //
     }
+
+
 }

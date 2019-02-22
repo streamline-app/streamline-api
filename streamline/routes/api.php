@@ -41,7 +41,7 @@ Route::delete('tokens/delete/{token}', 'TokenController@delete');
 Route::get('tokens/validate/{token}', 'TokenController@validateToken');
 
 // Settings CRUD Routes
-Route::get('settings', 'SettingsController@read');
+Route::get('settings', 'SettingsController@show');
 Route::put('settings', 'SettingsController@update');
 
 
