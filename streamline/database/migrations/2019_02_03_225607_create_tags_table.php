@@ -27,7 +27,7 @@ class CreateTagsTable extends Migration
         });
 
         Schema::table('tags', function (Blueprint $table) {
-            $table->foreign('userID')->references('id')->on('users');
+            $table->foreign('userID')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

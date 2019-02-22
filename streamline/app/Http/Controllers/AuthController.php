@@ -38,6 +38,12 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
+    public function deleteUser($id) {
+        $user = \App\User::find($id);
+        $user -> delete();
+        return response() -> json(['response'=>'success'], 200);
+    }
+
 
     /**
      * Get the authenticated User.
