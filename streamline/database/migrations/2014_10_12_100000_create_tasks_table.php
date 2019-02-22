@@ -39,7 +39,7 @@ class CreateTasksTable extends Migration
         });
 
         Schema::table('tasks', function (Blueprint $table) {
-            $table->foreign('ownerId')->references('id')->on('users');
+            $table->foreign('ownerId')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

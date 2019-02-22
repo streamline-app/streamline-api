@@ -21,8 +21,8 @@ class TaggableTable extends Migration
         });
 
         Schema::table('taggable', function (Blueprint $table) {
-            $table->foreign('task_id')->references('id')->on('tasks');
-            $table->foreign('tag_id')->references('id')->on('tags');
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
         });
     }
 

@@ -24,7 +24,7 @@ class TokenTable extends Migration
         }); 
 
         Schema::table('tokens', function (Blueprint $table) {
-            $table->foreign('userId')->references('id')->on('users');
+            $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

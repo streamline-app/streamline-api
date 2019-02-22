@@ -57,4 +57,5 @@ Route::group([
     Route::post('me', 'AuthController@me');
     Route::post('reset/password', 'PasswordResetController@passwordResetLink');
     Route::post('change/password', 'PasswordResetController@changePassword');
+    Route::get('user/delete/{id}', 'AuthController@deleteUser');
 });
