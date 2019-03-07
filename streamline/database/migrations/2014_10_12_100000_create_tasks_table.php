@@ -30,6 +30,10 @@ class CreateTasksTable extends Migration
             $table->integer('estimatedHour');
             // Expected Total Time the Task Should Take
             $table->bigInteger('expDuration');
+            // Priority of Task
+            $table->integer('priority')->unsigned();
+            // User inputed date for Task to be completed
+            $table->timestamp('completeDate')->nullable();
             // Updated_At at and Created_At
             $table->timestamps();
             // Task Last Turned Active Time
