@@ -19,7 +19,7 @@ Route::delete('tags/delete/{id}', 'TagController@destroy');
 // Task Tag routes
 Route::get('tasks/tags/{id}', 'TaskController@listTags');
 Route::post('tasks/removeTag/{id}/{tagID}', 'TaskController@removeTag');
-
+Route::put('tasks/addTag/{id}/{tagID}', 'TaskController@addTag');
 // Task CRUD Routes
 Route::get('tasks/', 'TaskController@index');
 Route::post('tasks/create', 'TaskController@create');
