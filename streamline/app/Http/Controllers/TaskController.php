@@ -43,6 +43,8 @@ class TaskController extends Controller
         $task -> title = $request -> get('title');
         $task -> body = $request -> get('body');
         $task -> workedDuration = 0;
+        $task -> priority = $request -> input('priority');
+        $task -> completeDate = $request -> input('completeDate');
         $task -> expDuration = $request -> input('expDuration');
         $task -> estimatedMin = $request -> input('estimatedMin');
         $task -> estimatedHour = $request -> input('estimatedHour');
@@ -116,6 +118,8 @@ class TaskController extends Controller
         $task -> estimatedMin = $request -> input('estimatedMin');
         $task -> estimatedHour = $request -> input('estimatedHour');
         $task -> expDuration = $request -> input('expDuration');
+        $task -> priority = $request -> input('priority');
+        $task -> completeDate = $request -> input('completeDate');
         $task -> save();
 
         return response('', 204);
