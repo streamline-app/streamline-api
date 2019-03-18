@@ -131,10 +131,36 @@ class TaskController extends Controller
      */
     public function removeTag($id, $tagID){
         $task = \App\Task::find($id);
+
+        if($task == null){
+            return response('', 404);
+        }
+
         $task->tags()->detach($tagID);
 
         return response('', 204);
     }
+
+
+    /**
+     * Add the relation between the specified tag and task
+     * 
+     * @param $id => taskID
+     * @param $userID 
+     * @return \Illuminate\Http\Response
+     */
+    public function addTag($id, $tagID){
+        $task = \App\Task::find($id);
+
+        if($task == null){
+            return response('', 404);
+        }
+
+        $task->tags()->attach($tagID);
+
+        return response('', 204);
+    }
+
 
     /**
      * Remove the specified resource from storage.

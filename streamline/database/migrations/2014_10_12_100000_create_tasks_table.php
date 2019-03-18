@@ -21,7 +21,7 @@ class CreateTasksTable extends Migration
             // Title of Task
             $table->string('title', 100);
             // Body of Task
-            $table->text('body');
+            $table->text('body')->nullable();
             // Current Total Time Worked on Task
             $table->bigInteger('workedDuration');
             // User inputed expected duration of task in minutes
