@@ -10,7 +10,7 @@ class TeamController extends Controller
 
     public function getTeams($id) {
         $teams = \App\Team::where('owner', $id)->get();
-        return response()->json($teams);
+        return response()->json($teams, 200);
     }
 
     public function create(Request $request) {
@@ -25,5 +25,16 @@ class TeamController extends Controller
         $team -> save();
         return response() -> json(['messagePTa'=>'success'], 200);
 
+    }
+
+    public function delete($id) {
+        $team = \App\Team::find($id);
+
+        if ($team == null) {
+            return response('', 404);
+        }
+
+        $team -> delete();
+        return response('', 204);
     }
 }
