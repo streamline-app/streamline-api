@@ -21,6 +21,10 @@ class TeamTable extends Migration
             $table->string('color', 100);
             $table->timestamps();
         });
+
+        Schema::table('teams', function (Blueprint $table) {
+            $table->foreign('owner')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 
     /**

@@ -7,6 +7,12 @@ use Carbon\Carbon;
 
 class TeamController extends Controller
 {
+
+    public function getTeams($id) {
+        $teams = \App\Team::where('owner', $id)->get();
+        return response()->json($teams);
+    }
+
     public function create(Request $request) {
         $team = new \App\Team;
         $team -> name = $request -> input('title');

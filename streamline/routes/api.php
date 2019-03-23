@@ -42,6 +42,7 @@ Route::delete('tokens/delete/{token}', 'TokenController@delete');
 Route::get('tokens/validate/{token}', 'TokenController@validateToken');
 
 Route::post('teams/create', 'TeamController@create');
+Route::get('teams/{id}', 'TeamController@getTeams');
 
 
 
