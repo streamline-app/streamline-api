@@ -41,6 +41,8 @@ Route::put('tokens/update/{id}', 'TokenController@update');
 Route::delete('tokens/delete/{token}', 'TokenController@delete');
 Route::get('tokens/validate/{token}', 'TokenController@validateToken');
 
+Route::post('teams/create', 'TeamController@create');
+
 
 
 // authentication routes

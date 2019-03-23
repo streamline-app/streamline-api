@@ -17,6 +17,7 @@ class TeamTable extends Migration
             $table->increments('id');
             $table->integer('owner') -> unsigned();
             $table->string('name', 100);
+            $table->string('description', 100);
             $table->string('color', 100);
             $table->timestamps();
         });
