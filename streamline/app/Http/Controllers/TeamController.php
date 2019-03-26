@@ -13,6 +13,11 @@ class TeamController extends Controller
         return response()->json($teams, 200);
     }
 
+    public function getTeam($id) {
+        $team = \App\Team::find($id);
+        return response()->json($team, 200);
+    }
+
     public function create(Request $request) {
         $team = new \App\Team;
         $team -> name = $request -> input('title');

@@ -43,7 +43,14 @@ Route::get('tokens/validate/{token}', 'TokenController@validateToken');
 
 Route::post('teams/create', 'TeamController@create');
 Route::get('teams/{id}', 'TeamController@getTeams');
+Route::get('team/{id}', 'TeamController@getTeam');
 Route::delete('teams/delete/{id}', 'TeamController@delete');
+
+Route::get('user/{email}', 'UserController@getUserId');
+
+Route::post('invitations/create', 'InvitationController@create');
+Route::get('sentInvitations/{id}', 'InvitationController@sentInvitations');
+Route::get('recievedInvitations/{id}', 'InvitationController@recievedInvitations');
 
 
 
