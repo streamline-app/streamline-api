@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class TeamController extends Controller
@@ -28,6 +29,11 @@ class TeamController extends Controller
         $team -> updated_at = Carbon::now()->toDateTimeString();
 
         $team -> save();
+
+        // Add the owner to the team member list
+        DB::table('teamassignments')->insert(
+            ['user' => $team->owner, 'team' => $team->id]
+        );
         return response() -> json(['messagePTa'=>'success'], 200);
 
     }
@@ -41,5 +47,15 @@ class TeamController extends Controller
 
         $team -> delete();
         return response('', 204);
+    }
+
+    public function getTeamMembers($id) {
+        $members = DB::table('teamassignments')
+        ->join('users', 'teamassignments.user', '=', 'users.id')
+        ->where('teamassignments.team', '=', $id)
+        ->select('users.name', 'users.email')
+        ->get();
+
+        return response() -> json($members, 200);
     }
 }

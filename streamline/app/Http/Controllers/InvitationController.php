@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use \App\Http\Controllers\UserController;
@@ -35,12 +36,45 @@ class InvitationController extends Controller
     }
 
     public function sentInvitations($id) {
-        $invitations = \App\Invitation::where('sender', $id)->get();
+        $invitations = DB::table('invitations')
+        ->join('teams', 'invitations.team', '=', 'teams.id')
+        ->select('invitations.*', 'teams.name')
+        ->where('invitations.sender', '=', $id)
+        ->get();
         return response() -> json($invitations, 200);
     }
 
     public function recievedInvitations($id) {
-        $invitations = \App\Invitation::where('recipient', $id)->get();
+        $invitations = DB::table('invitations')
+        ->join('teams', 'invitations.team', '=', 'teams.id')
+        ->select('invitations.*', 'teams.name')
+        ->where('invitations.recipient', '=', $id)
+        ->get();
         return response() -> json($invitations, 200);
+    }
+
+    public function acceptInvitation(Request $request) {
+        $userId = $request -> userId;
+        $teamId = $request -> teamId;
+        $invitationId = $request -> invitationId;
+
+        $inv = DB::table('invitations')->where('id', '=', $invitationId)->delete();
+
+        DB::table('teamassignments')->insert(
+            ['user' => $userId, 'team' => $teamId]
+        );
+
+        return response() -> json(['message' => 'success'], 200);
+
+    }
+
+    public function declineInvitation(Request $request) {
+        $userId = $request -> userId;
+        $teamId = $request -> teamId;
+        $invitationId = $request -> invitationId;
+        $inv = DB::table('invitations')->where('id', '=', $invitationId)->delete();
+
+        return response() -> json(['message' => 'success'], 200);
+
     }
 }
