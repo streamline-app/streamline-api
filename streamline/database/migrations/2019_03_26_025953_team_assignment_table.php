@@ -33,6 +33,6 @@ class TeamAssignmentTable extends Migration
      */
     public function down()
     {
-        Schmea::dropIfExists('teamassignments');
+        Schema::dropIfExists('teamassignments');
     }
 }

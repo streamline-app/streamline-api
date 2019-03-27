@@ -52,6 +52,7 @@ class TaskController extends Controller
         $task -> updated_at = Carbon::now()->toDateTimeString();
         $task -> lastWorkedAt = null;
         $task -> isFinished = false;
+        $task -> team = $request -> input('team');
         $task -> save();
 
         // Attatch Tags

@@ -32,6 +32,8 @@ class CreateTasksTable extends Migration
             $table->bigInteger('expDuration');
             // Priority of Task
             $table->integer('priority')->unsigned();
+            // Team ID associated to a task
+            $table->integer('team')->unsigned();
             // User inputed date for Task to be completed
             $table->timestamp('completeDate')->nullable();
             // Updated_At at and Created_At
