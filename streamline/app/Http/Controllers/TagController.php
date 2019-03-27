@@ -50,6 +50,7 @@ class TagController extends Controller
         $tag -> color = $request -> input('color');
         $tag -> created_at = Carbon::now()->toDateTimeString();
         $tag -> updated_at = Carbon::now()->toDateTimeString();
+        $tag -> team = $request -> input('team');
         $tag ->save();
   
         return 201; //201 Created

@@ -22,6 +22,8 @@ class CreateTagsTable extends Migration
             $table->double('average_accuracy');
             $table->double('task_over_to_under');
             $table->string('color', 10);
+            // Team ID associated to a tag
+            $table->integer('team')->unsigned();
             $table->integer('userID')->unsigned();
             $table->timestamps();
         });
