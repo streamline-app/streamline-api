@@ -62,6 +62,8 @@ class TeamController extends Controller
         }
 
         $team -> delete();
+
+        DB::table('tasks')->where('team', '=', $id)->delete();
         return response('', 204);
     }
 
@@ -69,7 +71,7 @@ class TeamController extends Controller
         $members = DB::table('teamassignments')
         ->join('users', 'teamassignments.user', '=', 'users.id')
         ->where('teamassignments.team', '=', $id)
-        ->select('users.name', 'users.email')
+        ->select('users.id', 'users.name', 'users.email')
         ->get();
 
         return response() -> json($members, 200);
@@ -88,6 +90,10 @@ class TeamController extends Controller
     public function leaveTeam(Request $request) {
          DB::table("teamassignments")->where('team', '=', $request -> team)->where('user', '=', $request -> user)->delete();
 
+         $teamMembers = DB::table("teamassignments")->where('team', '=', $request -> team)->count();
+         if ($teamMembers == 0) {
+             $this -> delete($request -> team);
+         }
          return response() -> json(['message'=>'success'], 200);
 
     }
