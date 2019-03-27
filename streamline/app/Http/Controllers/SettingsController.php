@@ -35,8 +35,8 @@ class SettingsController extends Controller
      */
     public function show($id)
     {
-        
-        $settings = \App\User::find($request -> userID)->tags;
+        $settings = DB::table('users')->where('id', $id)->value('settings');
+        return $settings;
     }
 
     /**
@@ -48,7 +48,7 @@ class SettingsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // $settings = \App\User::find
     }
 
     /**
