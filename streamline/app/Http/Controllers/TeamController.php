@@ -38,6 +38,22 @@ class TeamController extends Controller
 
     }
 
+    public function update(Request $request, $id)
+    {
+        $team = \App\Team::find($id);
+
+        if($team == null) {
+            return response('', 404);
+        } 
+
+        $team -> name = $request -> get('title');
+        $team -> description = $request -> get('description');
+        $team -> color = $request -> get('color');
+
+        $team -> save();
+        return response() -> json('success', 200);
+    }
+
     public function delete($id) {
         $team = \App\Team::find($id);
 
