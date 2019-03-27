@@ -42,10 +42,11 @@ Route::delete('tokens/delete/{token}', 'TokenController@delete');
 Route::get('tokens/validate/{token}', 'TokenController@validateToken');
 
 Route::post('teams/create', 'TeamController@create');
-Route::get('teams/{id}', 'TeamController@getTeams');
+Route::get('teams/{id}', 'TeamController@getTeamsForUser');
 Route::get('team/{id}', 'TeamController@getTeam');
 Route::delete('teams/delete/{id}', 'TeamController@delete');
 Route::get('teams/members/{id}', 'TeamController@getTeamMembers');
+Route::post('teams/leave', 'TeamController@leaveTeam');
 
 Route::get('user/{email}', 'UserController@getUserId');
 

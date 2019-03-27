@@ -20,6 +20,11 @@ class InvitationController extends Controller
             return response()->json(['message' => 'multiple invitations'], 200);
         }
 
+        $test = DB::table('teamassignments')->where('user', '=', $recipientId)->where('team', '=', $request -> team)->first();
+        if ($test) {
+            return response() -> json(['message' => 'member exists'], 200);
+        }
+
         $s = \App\User::find($senderId);
         $r = \App\User::find($recipientId);
         $invitation = new \App\Invitation;

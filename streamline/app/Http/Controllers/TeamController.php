@@ -58,4 +58,22 @@ class TeamController extends Controller
 
         return response() -> json($members, 200);
     }
+
+    public function getTeamsForUser($id) {
+        $teams = DB::table('teamassignments')
+        ->join('teams', 'teamassignments.team', '=', 'teams.id')
+        ->where('teamassignments.user', '=', $id)
+        ->select('teams.*')
+        ->get();
+
+        return $teams;
+    }
+
+    public function leaveTeam(Request $request) {
+         DB::table("teamassignments")->where('team', '=', $request -> team)->where('user', '=', $request -> user)->delete();
+
+         return response() -> json(['message'=>'success'], 200);
+
+    }
+    
 }
