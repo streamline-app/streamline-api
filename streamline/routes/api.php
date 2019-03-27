@@ -48,6 +48,9 @@ Route::delete('teams/delete/{id}', 'TeamController@delete');
 Route::get('teams/members/{id}', 'TeamController@getTeamMembers');
 Route::post('teams/leave', 'TeamController@leaveTeam');
 
+Route::get('teamtasks/', 'TaskController@teamIndex');
+Route::get('teamtags/', 'TagController@teamIndex');
+
 Route::get('user/{email}', 'UserController@getUserId');
 
 Route::post('invitations/create', 'InvitationController@create');

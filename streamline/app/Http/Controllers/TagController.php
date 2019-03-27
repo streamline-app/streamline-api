@@ -66,9 +66,22 @@ class TagController extends Controller
     public function list(Request $request){
 
         //find all tags associated with the given userID
-        $tags = \App\User::find($request -> userID)->tags;
+        $tags = DB::table('tags')->where('userID', '=', $request->userID)->where('team', '=', 0)->get();
 
         return $tags;
+    }
+
+    /**
+     * Display all tags that belong to the team with a teamID
+     * 
+     * @param Request $request 
+     * @return \Illuminate\Http\Response
+     */
+    public function teamIndex(Request $request) {
+        $teamId = $request -> teamID;
+
+        $tags = DB::table('tags')->where('team', '=', $teamId)->get();
+        return response()->json($tags, 200);
     }
 
     /**

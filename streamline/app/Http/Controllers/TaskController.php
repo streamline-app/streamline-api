@@ -21,10 +21,26 @@ class TaskController extends Controller
             return response('Missing userID', 404);
         }
 
-        $tasks = \App\User::find($userID)->tasks;
+        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->where('team', '=', 0)->get();
 
         //$tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'workedDuration', 'estimatedMin', 'estimatedHour', 'lastWorkedAt', 'expDuration', 'isFinished']);
         return response()->json($tasks);
+    }
+
+    /**
+     * Display all tasks owned by specified team.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function teamIndex(Request $request) {
+        $teamID = $request -> query('teamID');
+
+        if ($teamID == null) {
+            return response('Missing teamID', 404);
+        }
+
+        $tasks = DB::table('tasks')->where('team', '=', $teamID)->get();
+        return response()->json($tasks, 200);
     }
 
     /**
