@@ -272,7 +272,7 @@ class TaskController extends Controller
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch,CURLOPT_POST, 1);                //0 for a get request
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postBody);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
         curl_setopt($ch,CURLOPT_TIMEOUT, 20);
         $response = curl_exec($ch);
