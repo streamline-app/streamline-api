@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-define("APIURL", "");
+define("APIURL", "http://localhost:8080/api/");
 
 class TaskController extends Controller
 {
@@ -268,23 +268,24 @@ class TaskController extends Controller
             return response('Task already finished.', 409);
         }
 
-        $postBody = [
+        $postBody = array(
             'actualDuration' => $task -> workedDuration,
             'expDuration' => $task -> expDuration,
             'tags' => $task -> listTags,
-        ];
+        );
 
         $header = array(
-            'Accept: application/json',
-            'Content-Type: application/x-www-form-urlencoded',
+            'Content-Type: application/json',
             'Authorization: Basic '. base64_encode("user1:abc123")
         );
 
+        /*
         // GET REQUEST
         $ch = curl_init(APIURL);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        */
 
-        // POST REQUEST
+     /*   // POST REQUEST
         $ch = curl_init(APIURL);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch,CURLOPT_POST, 1);                //0 for a get request
@@ -294,6 +295,27 @@ class TaskController extends Controller
         curl_setopt($ch,CURLOPT_TIMEOUT, 20);
         $response = curl_exec($ch);
         curl_close($ch);
+
+        */
+
+        $c = stream_context_create(array(
+            'http' => array(
+                'method'  => 'GET',
+                'header' => "Authorization: Basic " . base64_encode("user1:abc123"),
+            ),
+        ));
+        
+        $id = file_get_contents(APIURL.'users/identity/1', false, $c);
+        $id = str_replace("\"", "", $id, $i);
+
+        $c = stream_context_create(array(
+            'http' => array(
+                'method'  => 'POST',
+                'header' => $header,
+                'content' => json_encode($postBody)
+            ),
+        ));
+        $response = file_get_contents(APIURL.'users/'.$id.'/tasks', false, $c);
 
         $task -> isFinished = true;
         $task -> save();
