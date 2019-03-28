@@ -305,7 +305,7 @@ class TaskController extends Controller
             ),
         ));
         
-        $id = file_get_contents(APIURL.'users/identity/1', false, $c);
+        $id = file_get_contents(APIURL.'users/identity/'.$task -> ownerId, false, $c);
         $id = str_replace("\"", "", $id, $i);
 
         $c = stream_context_create(array(
