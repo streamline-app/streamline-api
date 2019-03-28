@@ -23,7 +23,7 @@ class TaskController extends Controller
             return response('Missing userID', 404);
         }
 
-        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->where('team', '=', 0)->get();
+        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->where('team', '=', 0)->where('isFinished', '=', 0)->get();
 
         //$tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'workedDuration', 'estimatedMin', 'estimatedHour', 'lastWorkedAt', 'expDuration', 'isFinished']);
         return response()->json($tasks);
@@ -268,10 +268,13 @@ class TaskController extends Controller
             return response('Task already finished.', 409);
         }
 
+        $tags = DB::table('taggable')->join('tags', 'taggable.tag_id', '=', 'tags.id')
+        ->pluck('tags.name')->toArray();
+
         $postBody = array(
             'actualDuration' => $task -> workedDuration,
             'expDuration' => $task -> expDuration,
-            'tags' => $task -> listTags,
+            'tags' => $tags
         );
 
         $header = array(
