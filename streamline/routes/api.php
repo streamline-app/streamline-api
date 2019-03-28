@@ -41,6 +41,25 @@ Route::put('tokens/update/{id}', 'TokenController@update');
 Route::delete('tokens/delete/{token}', 'TokenController@delete');
 Route::get('tokens/validate/{token}', 'TokenController@validateToken');
 
+Route::post('teams/create', 'TeamController@create');
+Route::get('teams/{id}', 'TeamController@getTeamsForUser');
+Route::get('team/{id}', 'TeamController@getTeam');
+Route::delete('teams/delete/{id}', 'TeamController@delete');
+Route::get('teams/members/{id}', 'TeamController@getTeamMembers');
+Route::post('teams/leave', 'TeamController@leaveTeam');
+Route::put('teams/update/{id}', 'TeamController@update');
+
+Route::get('teamtasks/', 'TaskController@teamIndex');
+Route::get('teamtags/', 'TagController@teamIndex');
+
+Route::get('user/{email}', 'UserController@getUserId');
+
+Route::post('invitations/create', 'InvitationController@create');
+Route::get('sentInvitations/{id}', 'InvitationController@sentInvitations');
+Route::get('recievedInvitations/{id}', 'InvitationController@recievedInvitations');
+Route::post('invitations/accept', 'InvitationController@acceptInvitation');
+Route::post('invitations/decline', 'InvitationController@declineInvitation');
+
 
 
 // authentication routes
