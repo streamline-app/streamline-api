@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+define("APIURL", "");
+
 class TaskController extends Controller
 {
     /**
@@ -249,7 +251,33 @@ class TaskController extends Controller
             return response('Task already finished.', 409);
         }
 
-        //TODO: Implement Analytics Hook
+        $postBody = [
+            'actualDuration' => $task -> workedDuration,
+            'expDuration' => $task -> expDuration,
+            'tags' => $task -> listTags,
+        ];
+
+        $header = array(
+            'Accept: application/json',
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic '. base64_encode("user1:abc123")
+        );
+
+        // GET REQUEST
+        $ch = curl_init(APIURL);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        // POST REQUEST
+        $ch = curl_init(APIURL);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch,CURLOPT_POST, 1);                //0 for a get request
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 20);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
         $task -> isFinished = true;
         $task -> save();
         return response('', 204);
