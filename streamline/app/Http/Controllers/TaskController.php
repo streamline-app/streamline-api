@@ -269,6 +269,7 @@ class TaskController extends Controller
         }
 
         $tags = DB::table('taggable')->join('tags', 'taggable.tag_id', '=', 'tags.id')
+        ->where('taggable.task_id', '=', $task -> id)
         ->pluck('tags.name')->toArray();
 
         $postBody = array(
@@ -322,6 +323,6 @@ class TaskController extends Controller
 
         $task -> isFinished = true;
         $task -> save();
-        return response('', 204);
+        return $response;
     }
 }
