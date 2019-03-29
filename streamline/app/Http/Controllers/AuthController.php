@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\User;
 
+define("APIURL", "http://localhost:8080/api/");
+
 class AuthController extends Controller
 {
     /**
@@ -68,11 +70,40 @@ class AuthController extends Controller
     }
 
     public function signup(Request $request) {
-        return User::create([
+           $user = new User([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
         ]);
+        $user->save();
+
+        
+
+        $header = array(
+            'Content-Type: application/json',
+            'Authorization: Basic '. base64_encode("user1:abc123")
+        );
+
+        $id = $user->id;
+        $postBody = array(
+            'avgTaskTime' => 0,
+            'taskEstFactor' => 0,
+            'totalOverTasks' => 0,
+            'totalTasksComplete' => 0,
+            'totalUnderTasks' => 0,
+            'userId' => $id
+        );
+
+        $c = stream_context_create(array(
+            'http' => array(
+                'method'  => 'POST',
+                'header' => $header,
+                'content' => json_encode($postBody)
+            ),
+        ));
+        $response = file_get_contents(APIURL.'users/', false, $c);
+
+        return $response;
         $this -> login($request);
     }
 

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+define("APIURL", "http://localhost:8080/api/");
+
 class TaskController extends Controller
 {
     /**
@@ -21,7 +23,7 @@ class TaskController extends Controller
             return response('Missing userID', 404);
         }
 
-        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->where('team', '=', 0)->get();
+        $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->where('team', '=', 0)->where('isFinished', '=', 0)->get();
 
         //$tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'workedDuration', 'estimatedMin', 'estimatedHour', 'lastWorkedAt', 'expDuration', 'isFinished']);
         return response()->json($tasks);
@@ -266,9 +268,61 @@ class TaskController extends Controller
             return response('Task already finished.', 409);
         }
 
-        //TODO: Implement Analytics Hook
+        $tags = DB::table('taggable')->join('tags', 'taggable.tag_id', '=', 'tags.id')
+        ->where('taggable.task_id', '=', $task -> id)
+        ->pluck('tags.name')->toArray();
+
+        $postBody = array(
+            'actualDuration' => $task -> workedDuration,
+            'expDuration' => $task -> expDuration,
+            'tags' => $tags
+        );
+
+        $header = array(
+            'Content-Type: application/json',
+            'Authorization: Basic '. base64_encode("user1:abc123")
+        );
+
+        /*
+        // GET REQUEST
+        $ch = curl_init(APIURL);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        */
+
+     /*   // POST REQUEST
+        $ch = curl_init(APIURL);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch,CURLOPT_POST, 1);                //0 for a get request
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postBody);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 20);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        */
+
+        $c = stream_context_create(array(
+            'http' => array(
+                'method'  => 'GET',
+                'header' => "Authorization: Basic " . base64_encode("user1:abc123"),
+            ),
+        ));
+        
+        $id = file_get_contents(APIURL.'users/identity/'.$task -> ownerId, false, $c);
+        $id = str_replace("\"", "", $id, $i);
+
+        $c = stream_context_create(array(
+            'http' => array(
+                'method'  => 'POST',
+                'header' => $header,
+                'content' => json_encode($postBody)
+            ),
+        ));
+        $response = file_get_contents(APIURL.'users/'.$id.'/tasks', false, $c);
+
         $task -> isFinished = true;
         $task -> save();
-        return response('', 204);
+        return $response;
     }
 }
