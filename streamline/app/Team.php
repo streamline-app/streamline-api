@@ -8,4 +8,8 @@ class Team extends Model
 {
     protected $table = 'teams';
 
+    public function documents(){
+        return $this->hasMany('\App\Document');
+    }
+
 }
