@@ -53,7 +53,9 @@ Route::put('teams/update/{id}', 'TeamController@update');
 Route::get('teamtasks/', 'TaskController@teamIndex');
 Route::get('teamtags/', 'TagController@teamIndex');
 
-Route::post('teams/upload/', 'TeamController@upload');
+Route::get('team/fetchDocs/{id}', 'TeamController@indexFiles');
+Route::post('team/upload/', 'TeamController@upload');
+Route::options('team/downloadDoc/{id}', 'TeamController@download');
 
 Route::get('user/{email}', 'UserController@getUserId');
 

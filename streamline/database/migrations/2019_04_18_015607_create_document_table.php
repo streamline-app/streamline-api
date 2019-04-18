@@ -16,16 +16,18 @@ class CreateDocumentTable extends Migration
         Schema::create('documents', function (Blueprint $table){
             //Doc ID
             $table->increments('id');
-            //path to document
+            //path to document (with name generate by Laravel)
             $table->string('path', 200);
+            //given name of file
+            $table->string('name', 100);
             //Team ID
-            $table->integer('ownerID')->unsigned();
+            $table->integer('team_id')->unsigned();
             //laravel timestamps
             $table->timestamps();
         });
 
         Schema::table('documents', function (Blueprint $table) {
-            $table->foreign('ownerID')->references('id')->on('teams')->onDelete('cascade');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
     }
 

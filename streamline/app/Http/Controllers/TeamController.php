@@ -107,9 +107,9 @@ class TeamController extends Controller
 
     public function upload(Request $request)
     {
-        $path = Storage::putFile('documents', $request->file('upload'));
+        $path = Storage::disk('local')->putFile('public', $request->file('upload'));
 
-        $id = (int) $request->input('teamID');
+        $id = (int)$request->input('teamID');
 
         $team = \App\Team::find($id);
 
@@ -119,9 +119,51 @@ class TeamController extends Controller
 
         $doc = new \App\Document;
         $doc->path = $path;
-        $doc->ownerID = $team->id;
+        $doc->name = $request->file('upload')->getClientOriginalName();
+        $doc->team_id = $team->id;
         $doc->save();
 
-        return response()->json(['docID' => $doc->id], 201);
+        return response()->json(['docID' => $doc->id, 'path' => $path, 'name' => $doc->name], 201);
+    }
+
+    public function indexFiles($id)
+    {
+
+        $team = \App\Team::find($id);
+
+        if ($team == null) {
+            return response()->json(['team not found', $id], 404);
+        }
+
+
+        //list of Document entities for this team
+        $teamFiles = $team->documents;
+
+        $names = [];
+        foreach ($teamFiles as $row) {
+            $fileName = $row->name;
+            //    $file = Storage::disk('local')->get($fileName);
+
+            array_push($names, ([$fileName, $row->id]));
+        }
+
+        return response()->json($names, 200);
+    }
+
+    public function download($id)
+    {
+        $doc = \App\Document::find($id);
+
+        if ($doc == null) {
+            return response()->json(['doc not found', $id], 404);
+        }
+
+        $path = $doc->path;
+
+       
+        
+        return response() -> json('oof', 200);
+
+      //  return response() -> json(Storage::download($path, $doc->name, $headers), 200);
     }
 }
