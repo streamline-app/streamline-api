@@ -41,6 +41,7 @@ Route::put('tokens/update/{id}', 'TokenController@update');
 Route::delete('tokens/delete/{token}', 'TokenController@delete');
 Route::get('tokens/validate/{token}', 'TokenController@validateToken');
 
+// Team Routes
 Route::post('teams/create', 'TeamController@create');
 Route::get('teams/{id}', 'TeamController@getTeamsForUser');
 Route::get('team/{id}', 'TeamController@getTeam');
@@ -51,6 +52,8 @@ Route::put('teams/update/{id}', 'TeamController@update');
 
 Route::get('teamtasks/', 'TaskController@teamIndex');
 Route::get('teamtags/', 'TagController@teamIndex');
+
+Route::post('teams/upload/', 'TeamController@upload');
 
 Route::get('user/{email}', 'UserController@getUserId');
 
