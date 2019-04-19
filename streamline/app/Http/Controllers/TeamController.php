@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use function GuzzleHttp\json_encode;
+
+define("APIURL", "http://localhost:8080/api/");
 
 class TeamController extends Controller
 {
@@ -33,7 +36,7 @@ class TeamController extends Controller
 
         $team->save();
 
-        //create priority tags for the user
+        //create priority tags for the team
         for ($i = 1; $i <= 10; $i++) {
             $prio_tag = new \App\Tag([
                 'name' => 'priority ' . $i,
@@ -49,11 +52,38 @@ class TeamController extends Controller
             $prio_tag->save();
         }
 
+        // send request to data server to create a new user
+        $header = array(
+            'Content-Type: application/json',
+            'Authorization: Basic '. base64_encode("user1:abc123")
+        );
+
+        $id = $team->id;
+        $postBody = array(
+            'avgTaskTime' => 0,
+            'taskEstFactor' => 0,
+            'totalOverTasks' => 0,
+            'totalTasksComplete' => 0,
+            'totalUnderTasks' => 0,
+            'userId' => $id
+        );
+
+        $c = stream_context_create(array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => $header,
+                'content' => json_encode($postBody)
+            ),
+        ));
+        $response = file_get_contents(APIURL.'teams/', false, $c);
+
+
         // Add the owner to the team member list
         DB::table('teamassignments')->insert(
             ['user' => $team->owner, 'team' => $team->id]
         );
-        return response()->json(['messagePTa' => 'success'], 200);
+   //     return response()->json(['messagePTa' => 'success'], 200);
+        return $response;
     }
 
     public function update(Request $request, $id)
