@@ -53,7 +53,7 @@ class TagController extends Controller
         $tag -> team = $request -> input('team');
         $tag ->save();
   
-        return 201; //201 Created
+        return response()->json($tag, 201); //201 Created
     }
 
 
