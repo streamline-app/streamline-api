@@ -22,6 +22,21 @@ class FavoriteController extends Controller
             ['user' => $user, 'favorite' => $favorite, 'created_at' => $created, 'updated_at' => $updated]
         );
 
-        return response() -> json(['messsage' => 'success'], 200);
+        return response() -> json(['message' => 'Team member favorited.'], 200);
+    }
+
+    public function unFavoriteTeamMember(Request $request) {
+        $user = $request -> input('user');
+        $favorite = $request -> input('favorite');
+        $current = DB::table('favorites')->where('user', '=', $user)->where('favorite', '=', $favorite)->delete();
+
+        return response() -> json(['message' => 'Team member removed from favorites.'], 200);
+
+    }
+
+    public function getFavorites($id) {
+        $favorites = DB::table('favorites')->where('user', '=', $id)->pluck('favorite');
+
+        return response() -> json($favorites, 200);
     }
 }
