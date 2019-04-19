@@ -30,8 +30,6 @@ class CreateTasksTable extends Migration
             $table->integer('estimatedHour');
             // Expected Total Time the Task Should Take
             $table->bigInteger('expDuration');
-            // Priority of Task
-        //    $table->integer('priority')->unsigned();
             // Team ID associated to a task
             $table->integer('team')->unsigned();
             // User inputed date for Task to be completed

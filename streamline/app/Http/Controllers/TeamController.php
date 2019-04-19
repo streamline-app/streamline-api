@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+
 
 
 class TeamController extends Controller
@@ -160,10 +162,13 @@ class TeamController extends Controller
 
         $path = $doc->path;
 
-       
-        
-        return response() -> json('oof', 200);
+        $headers = [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Authorization , Access-Control-Request-Headers',
+            'Content-Type' => 'application/pdf',
+        ];
 
-      //  return response() -> json(Storage::download($path, $doc->name, $headers), 200);
+        return Storage::disk('local')->download($path, $doc->name, $headers);
     }
 }
