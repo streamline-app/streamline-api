@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+
+
+
 use function GuzzleHttp\json_encode;
 
 define("APIURL", "http://localhost:8080/api/");
@@ -82,7 +87,7 @@ class TeamController extends Controller
         DB::table('teamassignments')->insert(
             ['user' => $team->owner, 'team' => $team->id]
         );
-   //     return response()->json(['messagePTa' => 'success'], 200);
+
         return $response;
     }
 
@@ -147,5 +152,70 @@ class TeamController extends Controller
             $this->delete($request->team);
         }
         return response()->json(['message' => 'success'], 200);
+    }
+
+    public function upload(Request $request)
+    {
+        $path = Storage::disk('local')->putFile('public', $request->file('upload'));
+
+        $id = (int)$request->input('teamID');
+
+        $team = \App\Team::find($id);
+
+        if ($team == null) {
+            return response()->json(['team not found', $id], 404);
+        }
+
+        $doc = new \App\Document;
+        $doc->path = $path;
+        $doc->name = $request->file('upload')->getClientOriginalName();
+        $doc->team_id = $team->id;
+        $doc->save();
+
+        return response()->json(['docID' => $doc->id, 'path' => $path, 'name' => $doc->name], 201);
+    }
+
+    public function indexFiles($id)
+    {
+
+        $team = \App\Team::find($id);
+
+        if ($team == null) {
+            return response()->json(['team not found', $id], 404);
+        }
+
+
+        //list of Document entities for this team
+        $teamFiles = $team->documents;
+
+        $names = [];
+        foreach ($teamFiles as $row) {
+            $fileName = $row->name;
+            //    $file = Storage::disk('local')->get($fileName);
+
+            array_push($names, ([$fileName, $row->id]));
+        }
+
+        return response()->json($names, 200);
+    }
+
+    public function download($id)
+    {
+        $doc = \App\Document::find($id);
+
+        if ($doc == null) {
+            return response()->json(['doc not found', $id], 404);
+        }
+
+        $path = $doc->path;
+
+        $headers = [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Authorization , Access-Control-Request-Headers',
+            'Content-Type' => 'application/pdf',
+        ];
+
+        return Storage::disk('local')->download($path, $doc->name, $headers);
     }
 }
