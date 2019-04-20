@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\User;
+use App\Tag;
 
 define("APIURL", "http://localhost:8080/api/");
 
@@ -77,8 +78,23 @@ class AuthController extends Controller
         ]);
         $user->save();
 
-        
+        //create priority tags for the user
+        for($i = 1; $i <= 10; $i++){
+            $prio_tag = new \App\Tag([
+                'name' => 'priority ' . $i,
+                'description' => 'priority tag ' . $i,
+                'tasks_completed' => 0,
+                'average_time' => 0,
+                'average_accuracy' => 0,
+                'task_over_to_under' => 0,
+                'color' => '#c4c4c4',
+                'team' => 0,
+                'userID' => $user['id']
+            ]);
+            $prio_tag->save();
+        }
 
+        // send request to data server to create a new user
         $header = array(
             'Content-Type: application/json',
             'Authorization: Basic '. base64_encode("user1:abc123")
