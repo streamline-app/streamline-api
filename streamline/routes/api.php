@@ -65,6 +65,9 @@ Route::get('recievedInvitations/{id}', 'InvitationController@recievedInvitations
 Route::post('invitations/accept', 'InvitationController@acceptInvitation');
 Route::post('invitations/decline', 'InvitationController@declineInvitation');
 
+Route::post('favorite/favoriteTeamMember', 'FavoriteController@favoriteTeamMember');
+Route::post('favorite/unFavoriteTeamMember', 'FavoriteController@unFavoriteTeamMember');
+Route::get('favorite/getFavorites/{id}', 'FavoriteController@getFavorites');
 
 
 // authentication routes

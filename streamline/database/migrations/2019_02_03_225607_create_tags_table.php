@@ -27,10 +27,11 @@ class CreateTagsTable extends Migration
             $table->integer('userID')->unsigned();
             $table->timestamps();
         });
-
+/*
         Schema::table('tags', function (Blueprint $table) {
             $table->foreign('userID')->references('id')->on('users')->onDelete('cascade');
         });
+        */
     }
 
     /**
