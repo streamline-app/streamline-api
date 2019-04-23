@@ -49,6 +49,11 @@ Route::delete('teams/delete/{id}', 'TeamController@delete');
 Route::get('teams/members/{id}', 'TeamController@getTeamMembers');
 Route::post('teams/leave', 'TeamController@leaveTeam');
 Route::put('teams/update/{id}', 'TeamController@update');
+Route::post('teams/promote', 'TeamController@promoteTeamMember');
+Route::post('teams/demote', 'TeamController@demoteTeamMember');
+Route::post('teams/checkAdmin', 'TeamController@checkAdmin');
+
+
 
 Route::get('teamtasks/', 'TaskController@teamIndex');
 Route::get('teamtags/', 'TagController@teamIndex');

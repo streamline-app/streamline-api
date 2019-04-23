@@ -78,7 +78,7 @@ class InvitationController extends Controller
         DB::table('invitations')->where('id', '=', $invitationId)->delete();
 
         DB::table('teamassignments')->insert(
-            ['user' => $userId, 'team' => $teamId]
+            ['user' => $userId, 'team' => $teamId, 'admin' => 'false']
         );
 
         $user = \App\User::find($userId);

@@ -85,7 +85,7 @@ class TeamController extends Controller
 
         // Add the owner to the team member list
         DB::table('teamassignments')->insert(
-            ['user' => $team->owner, 'team' => $team->id]
+            ['user' => $team->owner, 'team' => $team->id, 'admin' => 'true']
         );
 
         return $response;
@@ -167,7 +167,7 @@ class TeamController extends Controller
         $members = DB::table('teamassignments')
             ->join('users', 'teamassignments.user', '=', 'users.id')
             ->where('teamassignments.team', '=', $id)
-            ->select('users.id', 'users.name', 'users.email')
+            ->select('users.id', 'users.name', 'users.email', 'teamassignments.admin')
             ->get();
 
         return response()->json($members, 200);
@@ -182,6 +182,35 @@ class TeamController extends Controller
             ->get();
 
         return $teams;
+    }
+
+    public function promoteTeamMember(Request $request) {
+        $userId = $request -> id;
+        $teamId = $request -> teamId;
+        $promotion = $request -> promotion; 
+
+        DB::table("teamassignments")->where('team', '=', $teamId)->where('user', '=', $userId)->update(['admin' => 'true']);
+
+        return response()->json(['message' => 'success'], 200);
+    }
+
+    public function demoteTeamMember(Request $request) {
+        $userId = $request -> id;
+        $teamId = $request -> teamId;
+        $promotion = $request -> promotion; 
+
+        DB::table("teamassignments")->where('team', '=', $teamId)->where('user', '=', $userId)->update(['admin' => 'false']);
+
+        return response()->json(['message' => 'success'], 200);
+    }
+
+    public function checkAdmin(Request $request) {
+        $userId = $request -> id;
+        $teamId = $request -> teamId;
+
+        $result = DB::table("teamassignments")->where('team', '=', $teamId)->where('user', '=', $userId)->pluck('admin');
+
+        return $result;
     }
 
     public function leaveTeam(Request $request)
