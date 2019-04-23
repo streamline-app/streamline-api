@@ -60,7 +60,7 @@ class TeamController extends Controller
         // send request to data server to create a new user
         $header = array(
             'Content-Type: application/json',
-            'Authorization: Basic '. base64_encode("user1:abc123")
+            'Authorization: Basic ' . base64_encode("user1:abc123")
         );
 
         $id = $team->id;
@@ -80,7 +80,7 @@ class TeamController extends Controller
                 'content' => json_encode($postBody)
             ),
         ));
-        $response = file_get_contents(APIURL.'teams/', false, $c);
+        $response = file_get_contents(APIURL . 'teams/', false, $c);
 
 
         // Add the owner to the team member list
@@ -109,6 +109,10 @@ class TeamController extends Controller
 
     public function delete($id)
     {
+        /**
+         * Delete Team from Laravel system, and cascade delete across any tasks and tags
+         * associated with the team
+         */
         $team = \App\Team::find($id);
 
         if ($team == null) {
@@ -117,7 +121,44 @@ class TeamController extends Controller
 
         $team->delete();
 
+        //cascade delete in Tasks and Tag tables
         DB::table('tasks')->where('team', '=', $id)->delete();
+        DB::table('tags')->where('team', '=', $id)->delete();
+
+        /*
+         * Now we must delete the user from the analytics engine. This requires first
+         * getting the UUID of the user with ID = $id and using that to send the DELETE
+         * request.
+         */
+
+        //create header for HTTP request(s)
+        $header = array(
+            'Content-Type: application/json',
+            'Authorization: Basic ' . base64_encode("user1:abc123")
+        );
+
+        //create body of request for GET-ing UUID
+        $getOpts = stream_context_create(array(
+            'http' => array(
+                'method'  => 'GET',
+                'header' => $header,
+            ),
+        ));
+
+        //send GET request
+        $UUID = json_decode(file_get_contents(APIURL . 'teams/identity/' . $id, false, $getOpts));
+
+        //construct DELETE request with UUID
+        $delOpts = stream_context_create(array(
+            'http' => array(
+                'method' => 'DELETE',
+                'header' => $header,
+            ),
+        ));
+
+        //send DELETE request
+        $delResp = file_get_contents(APIURL . 'users/' . $UUID, false, $delOpts);
+
         return response('', 204);
     }
 
