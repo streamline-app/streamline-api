@@ -39,4 +39,10 @@ class FavoriteController extends Controller
 
         return response() -> json($favorites, 200);
     }
+
+    public function getFavoriteEmails($id) {
+        $favorites = DB::table('favorites')->join('users', 'favorites.favorite', '=', 'users.id')
+        ->where('favorites.user', '=', $id)->pluck('email');
+        return $favorites;
+    }
 }
