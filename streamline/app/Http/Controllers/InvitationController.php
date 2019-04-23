@@ -10,6 +10,7 @@ use Illuminate\Mail\Mailable;
 use \App\Mail\TeamInviteMail;
 use \App\Mail\InviteAcceptMail;
 use \App\Mail\InviteDeclineMail;
+use \App\Mail\TeamRevokeMail;
 
 use \App\Http\Controllers\UserController;
 
@@ -104,6 +105,17 @@ class InvitationController extends Controller
 
     }
 
+    public function revokeInvitation(Request $request) {
+        $invitationId = $request -> id;
+        $inv = DB::table('invitations')->where('id', '=', $invitationId)->first();
+        $teamId = $inv -> team;
+        $recipientEmail = $inv -> recipientEmail;
+        $team = DB::table('teams')->where('id', '=', $teamId)->first();
+        DB::table('invitations')->where('id', '=', $invitationId)->delete();
+        $this -> sendRevokeInviteMail($recipientEmail, $team -> name);
+        return response() -> json(['message' => 'success'], 200);        
+    }
+
     public function sendInviteMail($email, $team) {
         Mail::to($email)->send(new TeamInviteMail($team));
     }
@@ -114,5 +126,9 @@ class InvitationController extends Controller
 
     public function sendDeclineInviteMail($recipientEmail, $email, $team) {
         Mail::to($recipientEmail)->send(new InviteDeclineMail($team, $email));
+    }
+
+    public function sendRevokeInviteMail($recipientEmail, $team) {
+        Mail::to($recipientEmail)->send(new TeamRevokeMail($team));
     }
 }
