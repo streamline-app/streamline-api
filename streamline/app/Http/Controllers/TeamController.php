@@ -85,7 +85,7 @@ class TeamController extends Controller
 
         // Add the owner to the team member list
         DB::table('teamassignments')->insert(
-            ['user' => $team->owner, 'team' => $team->id]
+            ['user' => $team->owner, 'team' => $team->id, 'admin' => 'true']
         );
 
         return $response;
@@ -167,7 +167,7 @@ class TeamController extends Controller
         $members = DB::table('teamassignments')
             ->join('users', 'teamassignments.user', '=', 'users.id')
             ->where('teamassignments.team', '=', $id)
-            ->select('users.id', 'users.name', 'users.email')
+            ->select('users.id', 'users.name', 'users.email', 'teamassignments.admin')
             ->get();
 
         return response()->json($members, 200);

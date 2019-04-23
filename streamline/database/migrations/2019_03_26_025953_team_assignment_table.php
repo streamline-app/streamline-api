@@ -17,6 +17,7 @@ class TeamAssignmentTable extends Migration
             $table->increments('id');
             $table->integer('user') -> unsigned();
             $table->integer('team') -> unsigned();
+            $table->string('admin', 100);
             $table->timestamps();
         });
 
