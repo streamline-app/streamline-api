@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\User;
 use App\Tag;
+use function GuzzleHttp\json_decode;
 
 define("APIURL", "http://localhost:8080/api/");
 
@@ -34,17 +35,60 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
     }
 
-    public function deleteUser($id) {
+    public function deleteUser($id)
+    {
+        //delete user from laravel system
         $user = \App\User::find($id);
-        $user -> delete();
-        return response() -> json(['response'=>'success'], 200);
+        if ($user != null) {
+            $user->delete();
+        }
+        else {
+            return response() -> json('User ID not found', 404);
+        }
+
+        /*
+         * Now we must delete the user from the analytics engine. This requires first
+         * getting the UUID of the user with ID = $id and using that to send the DELETE
+         * request.
+         */
+
+        //create header for HTTP request(s)
+        $header = array(
+            'Content-Type: application/json',
+            'Authorization: Basic ' . base64_encode("user1:abc123")
+        );
+
+        //create body of request for GET-ing UUID
+        $getOpts = stream_context_create(array(
+            'http' => array(
+                'method'  => 'GET',
+                'header' => $header,
+            ),
+        ));
+
+        //send GET request
+        $UUID = json_decode(file_get_contents(APIURL . 'users/identity/' . $id, false, $getOpts));
+
+        //construct DELETE request with UUID
+        $delOpts = stream_context_create(array(
+            'http' => array(
+                'method' => 'DELETE',
+                'header' => $header,
+            ),
+        ));
+
+        //send DELETE request
+        $delResp = file_get_contents(APIURL . 'users/' . $UUID, false, $delOpts);
+
+        //return success to client
+        return response()->json(['response' => 'success', 'analytics' => $delResp], 200);
     }
 
 
@@ -70,8 +114,9 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-    public function signup(Request $request) {
-           $user = new User([
+    public function signup(Request $request)
+    {
+        $user = new User([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
@@ -79,7 +124,7 @@ class AuthController extends Controller
         $user->save();
 
         //create priority tags for the user
-        for($i = 1; $i <= 10; $i++){
+        for ($i = 1; $i <= 10; $i++) {
             $prio_tag = new \App\Tag([
                 'name' => 'priority ' . $i,
                 'description' => 'priority tag ' . $i,
@@ -97,7 +142,7 @@ class AuthController extends Controller
         // send request to data server to create a new user
         $header = array(
             'Content-Type: application/json',
-            'Authorization: Basic '. base64_encode("user1:abc123")
+            'Authorization: Basic ' . base64_encode("user1:abc123")
         );
 
         $id = $user->id;
@@ -117,10 +162,10 @@ class AuthController extends Controller
                 'content' => json_encode($postBody)
             ),
         ));
-        $response = file_get_contents(APIURL.'users/', false, $c);
+        $response = file_get_contents(APIURL . 'users/', false, $c);
 
         return $response;
-        $this -> login($request);
+        $this->login($request);
     }
 
 
