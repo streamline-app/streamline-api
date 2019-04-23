@@ -184,6 +184,35 @@ class TeamController extends Controller
         return $teams;
     }
 
+    public function promoteTeamMember(Request $request) {
+        $userId = $request -> id;
+        $teamId = $request -> teamId;
+        $promotion = $request -> promotion; 
+
+        DB::table("teamassignments")->where('team', '=', $teamId)->where('user', '=', $userId)->update(['admin' => 'true']);
+
+        return response()->json(['message' => 'success'], 200);
+    }
+
+    public function demoteTeamMember(Request $request) {
+        $userId = $request -> id;
+        $teamId = $request -> teamId;
+        $promotion = $request -> promotion; 
+
+        DB::table("teamassignments")->where('team', '=', $teamId)->where('user', '=', $userId)->update(['admin' => 'false']);
+
+        return response()->json(['message' => 'success'], 200);
+    }
+
+    public function checkAdmin(Request $request) {
+        $userId = $request -> id;
+        $teamId = $request -> teamId;
+
+        $result = DB::table("teamassignments")->where('team', '=', $teamId)->where('user', '=', $userId)->pluck('admin');
+
+        return $result;
+    }
+
     public function leaveTeam(Request $request)
     {
         DB::table("teamassignments")->where('team', '=', $request->team)->where('user', '=', $request->user)->delete();
