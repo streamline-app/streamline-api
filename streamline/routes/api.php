@@ -52,6 +52,7 @@ Route::put('teams/update/{id}', 'TeamController@update');
 Route::post('teams/promote', 'TeamController@promoteTeamMember');
 Route::post('teams/demote', 'TeamController@demoteTeamMember');
 Route::post('teams/checkAdmin', 'TeamController@checkAdmin');
+Route::post('teams/transfer', 'TeamController@transferOwnership');
 
 
 

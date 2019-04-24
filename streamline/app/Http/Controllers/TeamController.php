@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use \App\Mail\TransferOwnershipMail;
 use Illuminate\Support\Facades\Response;
-
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Mailable;
 
 
 use function GuzzleHttp\json_encode;
@@ -204,6 +206,24 @@ class TeamController extends Controller
         return response()->json(['message' => 'success'], 200);
     }
 
+    public function transferOwnership(Request $request) {
+        $previousOwner = $request -> previous;
+        $newOwner = $request -> newOwner;
+        $team = $request -> team;
+        DB::table("teams")->where('id', '=', $team)->update(['owner' => $newOwner]);
+        $t = DB::table("teams")->where('id', '=', $team)->first();
+        DB::table("teamassignments")->where('team', '=', $team)->where('user', '=', $newOwner)->update(['admin' => 'true']);
+        DB::table("teamassignments")->where('team', '=', $team)->where('user', '=', $previousOwner)->update(['admin' => 'true']);
+
+        $user = DB::table('users')->where('id', '=', $newOwner)->first();
+
+        $this -> sendOwnershipTransferMail($user -> email, $t -> name);
+
+        return response()->json(['message' => 'success'], 200);
+
+
+    }
+
     public function checkAdmin(Request $request) {
         $userId = $request -> id;
         $teamId = $request -> teamId;
@@ -287,5 +307,9 @@ class TeamController extends Controller
         ];
 
         return Storage::disk('local')->download($path, $doc->name, $headers);
+    }
+
+    public function sendOwnershipTransferMail($recipientEmail, $team) {
+        Mail::to($recipientEmail)->send(new TransferOwnershipMail($team));
     }
 }
