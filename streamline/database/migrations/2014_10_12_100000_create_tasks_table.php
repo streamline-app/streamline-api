@@ -32,6 +32,8 @@ class CreateTasksTable extends Migration
             $table->bigInteger('expDuration');
             // Team ID associated to a task
             $table->integer('team')->unsigned();
+            // The assigned user to this particular task
+            $table->integer('assigned')->unsigned();
             // User inputed date for Task to be completed
             $table->timestamp('completeDate')->nullable();
             // Updated_At at and Created_At

@@ -31,6 +31,28 @@ class TeamController extends Controller
         return response()->json($team, 200);
     }
 
+    public function getTeamMemberTasks($id) {
+        $members = DB::table('teamassignments')
+            ->join('users', 'teamassignments.user', '=', 'users.id')
+            ->where('teamassignments.team', '=', $id)
+            ->select('users.id', 'users.name', 'users.email', 'teamassignments.admin')
+            ->get();
+
+        $counter = 0;
+        $res = "[";
+        foreach($members as $member){
+            $counter++;
+            $tasks = DB::table('tasks')->where('id', '>', '0')->get();
+            $entry = "{\"id\":\"".$member->id."\", \"name\":\"".$member->name."\", \"email\":\"".$member->email."\", \"tasks\":".$tasks."},";
+            $res = $res.$entry;
+        }
+        $length = strlen($res);
+        $res = substr($res, 0, $length - 1);
+        $res = $res.']';
+        return $res;
+
+    }
+
     public function create(Request $request)
     {
         $team = new \App\Team;
