@@ -33,6 +33,8 @@ Route::post('tasks/{id}/start', 'TaskController@start');
 Route::post('tasks/{id}/stop', 'TaskController@stop');
 Route::post('tasks/{id}/finish', 'TaskController@finish');
 
+Route::get('tasks/{taskId}/assign/{userId}', 'TaskController@assignUser');
+
 // Token CRUD Routes
 Route::get('tokens/', 'TokenController@index');
 Route::post('tokens/create', 'TokenController@create');
@@ -53,6 +55,7 @@ Route::post('teams/promote', 'TeamController@promoteTeamMember');
 Route::post('teams/demote', 'TeamController@demoteTeamMember');
 Route::post('teams/checkAdmin', 'TeamController@checkAdmin');
 Route::post('teams/transfer', 'TeamController@transferOwnership');
+Route::get('teams/getTeamMemberTasks/{id}', 'TeamController@getTeamMemberTasks');
 
 
 

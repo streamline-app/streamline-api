@@ -24,6 +24,10 @@ class TaskController extends Controller
         }
 
         $tasks = DB::table('tasks')->where('ownerId', '=', $userID)->where('team', '=', 0)->where('isFinished', '=', 0)->get();
+        $tasks = DB::table('tasks')
+        ->where('ownerId', '=', $userID)
+        ->where('team', '=', 0)
+        ->where('isFinished', '=', 0)->get();
 
         //$tasks = DB::table('tasks')->where('ownerId', '=', $userID)->get(['id', 'title', 'body', 'workedDuration', 'estimatedMin', 'estimatedHour', 'lastWorkedAt', 'expDuration', 'isFinished']);
         return response()->json($tasks);
@@ -43,6 +47,11 @@ class TaskController extends Controller
 
         $tasks = DB::table('tasks')->where('team', '=', $teamID)->get();
         return response()->json($tasks, 200);
+    }
+
+    public function assignUser($taskId, $userId) {
+        DB::table("tasks")->where('id', '=', $taskId) ->update(['assigned' => $userId ]);
+        return response()->json(['message' => 'success'], 200);
     }
 
     /**
@@ -67,6 +76,7 @@ class TaskController extends Controller
         $task -> estimatedHour = $request -> input('estimatedHour');
         $task -> created_at = Carbon::now()->toDateTimeString();
         $task -> updated_at = Carbon::now()->toDateTimeString();
+        $task -> assigned = 0;
         $task -> lastWorkedAt = null;
         $task -> isFinished = false;
         $task -> team = $request -> input('team');
