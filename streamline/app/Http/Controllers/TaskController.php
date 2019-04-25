@@ -45,7 +45,7 @@ class TaskController extends Controller
             return response('Missing teamID', 404);
         }
 
-        $tasks = DB::table('tasks')->where('team', '=', $teamID)->get();
+        $tasks = DB::table('tasks')->where('team', '=', $teamID)->where('isFinished', '=', 0)->get();
         return response()->json($tasks, 200);
     }
 
